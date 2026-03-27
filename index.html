@@ -1,221 +1,698 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jovani Sam-Burgin | Electrician Portfolio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jovani Sam-Burgin | Construction Electrician Portfolio</title>
+  <style>
+    :root {
+      --bg: #081120;
+      --bg2: #0d1b2f;
+      --panel: rgba(255, 255, 255, 0.06);
+      --panel-border: rgba(255, 255, 255, 0.12);
+      --text: #e7edf5;
+      --muted: #a7b3c5;
+      --accent: #4cc9f0;
+      --accent-2: #7dd3fc;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+      --radius: 18px;
+      --max: 1120px;
+    }* {
+  box-sizing: border-box;
+}
 
-<style>
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0f172a;
-    color: #e2e8f0;
-    scroll-behavior: smooth;
+  margin: 0;
+  font-family: Inter, Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(76, 201, 240, 0.16), transparent 28%),
+    radial-gradient(circle at 85% 20%, rgba(125, 211, 252, 0.12), transparent 24%),
+    linear-gradient(180deg, var(--bg) 0%, #091626 42%, #07111c 100%);
+  overflow-x: hidden;
 }
 
-/* ANIMATIONS */
-.fade-in {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeIn 1s forwards;
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.35) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.15));
 }
 
-@keyframes fadeIn {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(14px);
+  background: rgba(8, 17, 32, 0.75);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-header {
-    padding: 60px 20px;
-    text-align: center;
-    background: #020617;
+.nav-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  gap: 16px;
+}
+
+.brand {
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.brand span {
+  color: var(--accent);
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.hero {
+  position: relative;
+  max-width: var(--max);
+  margin: 0 auto;
+  min-height: 84vh;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: center;
+  gap: 32px;
+  padding: 80px 20px 36px;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  right: -120px;
+  top: 120px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(76, 201, 240, 0.22), transparent 60%);
+  filter: blur(10px);
+  animation: float 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-18px); }
+}
+
+.eyebrow {
+  display: inline-block;
+  color: var(--accent-2);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
 }
 
 h1 {
-    margin: 0;
-    font-size: 2.5rem;
+  margin: 0 0 14px;
+  font-size: clamp(2.3rem, 6vw, 4.8rem);
+  line-height: 0.97;
+  letter-spacing: -0.04em;
 }
 
-h2 {
-    color: #38bdf8;
-    border-bottom: 2px solid #1e293b;
-    padding-bottom: 5px;
+.hero p {
+  color: var(--muted);
+  font-size: 1.06rem;
+  line-height: 1.75;
+  max-width: 760px;
+  margin: 0 0 26px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.btn {
+  text-decoration: none;
+  color: var(--text);
+  padding: 13px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.24);
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, #1f9cc6, #3fbde5);
+  color: #03111a;
+  font-weight: 800;
+  border: none;
+}
+
+.hero-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.04));
+  border: 1px solid var(--panel-border);
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-card::before {
+  content: "";
+  position: absolute;
+  inset: -40% auto auto -20%;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(76, 201, 240, 0.2), transparent 65%);
+  transform: rotate(12deg);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.stat {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 1.25rem;
+  color: var(--accent-2);
+  margin-bottom: 6px;
+}
+
+main {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 12px 20px 80px;
 }
 
 section {
-    padding: 40px 20px;
-    max-width: 900px;
-    margin: auto;
+  margin: 20px 0 26px;
+}
+
+.section-title {
+  margin: 0 0 16px;
+  font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+  letter-spacing: -0.03em;
+}
+
+.section-sub {
+  color: var(--muted);
+  margin: 0 0 24px;
+  line-height: 1.7;
+  max-width: 760px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 18px;
 }
 
 .card {
-    background: #020617;
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: 20px;
-    transition: transform 0.3s ease;
+  grid-column: span 12;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+  transition: transform 0.35s ease, border-color 0.35s ease, background 0.35s ease;
 }
 
 .card:hover {
-    transform: translateY(-5px);
+  transform: translateY(-4px);
+  border-color: rgba(125, 211, 252, 0.35);
+  background: rgba(255,255,255,0.075);
+}
+
+.span-6 { grid-column: span 6; }
+.span-4 { grid-column: span 4; }
+.span-8 { grid-column: span 8; }
+
+.kicker {
+  color: var(--accent-2);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+h3 {
+  margin: 0 0 10px;
+  font-size: 1.14rem;
+}
+
+p, li {
+  color: var(--muted);
+  line-height: 1.75;
 }
 
 ul {
-    line-height: 1.8;
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
+.timeline-item {
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.timeline-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.timeline-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.timeline-top .date {
+  color: var(--accent-2);
+  font-weight: 700;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.tag {
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.09);
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+.contact-box {
+  display: grid;
+  gap: 12px;
+}
+
+.contact-box a {
+  color: var(--accent-2);
+  text-decoration: none;
 }
 
 footer {
-    text-align: center;
-    padding: 20px;
-    background: #020617;
+  padding: 30px 20px 60px;
+  text-align: center;
+  color: var(--muted);
 }
-</style>
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px) scale(0.985);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  will-change: opacity, transform;
+}
+
+.reveal.left {
+  transform: translateX(-42px);
+}
+
+.reveal.right {
+  transform: translateX(42px);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+}
+
+@media (max-width: 920px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-top: 54px;
+  }
+
+  .span-6, .span-4, .span-8 {
+    grid-column: span 12;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-links {
+    justify-content: flex-start;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+  </style>
 </head>
-
 <body>
-
-<header class="fade-in">
-    <h1>Jovani Sam-Burgin</h1>
-    <p>Construction Electrician Trainee | Reliable | Ready to Work</p>
-</header>
-
-<section class="fade-in">
-    <h2>Introduction</h2>
-    <div class="card">
-        <p>
-        I am currently training as a Construction Electrician and working toward securing an apprenticeship.
-        My background in the Canadian Armed Forces has built strong discipline, reliability, and the ability to work in structured environments.
-        </p>
+  <div class="bg-grid"></div>  <nav>
+    <div class="nav-inner">
+      <div class="brand">Jovani <span>Sam-Burgin</span></div>
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#goals">Goals</a>
+        <a href="#resume">Resume</a>
+        <a href="#experience">Experience</a>
+        <a href="#achievements">Achievements</a>
+        <a href="#contact">Contact</a>
+      </div>
     </div>
+  </nav>  <header class="hero">
+    <div class="reveal left visible">
+      <div class="eyebrow">Construction Electrician Portfolio</div>
+      <h1>Reliable. Structured. Ready to build a real career in the trade.</h1>
+      <p>
+        I am currently pursuing the Construction Electrician path and building the discipline, safety awareness, and work habits required to succeed in the electrical trade. My background includes Canadian Armed Forces training, WHMIS knowledge, First Aid training, and experience working in structured, team-based environments. 
+      </p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#resume">View Resume</a>
+        <a class="btn" href="#contact">Contact Me</a>
+      </div>
+    </div><div class="hero-card reveal right visible">
+  <div class="kicker">Quick Snapshot</div>
+  <h3>Jovani Sam-Burgin</h3>
+  <p>Port Moody / Metro Vancouver, BC</p>
+  <div class="stats">
+    <div class="stat">
+      <strong>WHMIS</strong>
+      <span>Certified</span>
+    </div>
+    <div class="stat">
+      <strong>First Aid</strong>
+      <span>Trained</span>
+    </div>
+    <div class="stat">
+      <strong>Class N</strong>
+      <span>BC Driver's License</span>
+    </div>
+    <div class="stat">
+      <strong>CAF</strong>
+      <span>Combat Engineer Background</span>
+    </div>
+  </div>
+</div>
+
+  </header>  <main>
+    <section id="about">
+      <h2 class="section-title reveal">About Me</h2>
+      <p class="section-sub reveal">
+        This portfolio highlights my background, goals, skills, certifications, and work experience as I move toward a long-term career in the electrical trade.
+      </p>
+      <div class="grid">
+        <div class="card span-6 reveal left">
+          <div class="kicker">Introduction</div>
+          <h3>Why I chose this path</h3>
+          <p>
+            I am working toward becoming a Construction Electrician because the trade combines practical work, responsibility, and technical problem-solving. I value structured environments where standards matter, safety matters, and work is expected to be done properly.
+          </p>
+        </div>
+        <div class="card span-6 reveal right">
+          <div class="kicker">My Impressions</div>
+          <h3>What I have learned so far</h3>
+          <p>
+            My impression of the electrical field is that it demands more than effort alone. It requires consistency, attention to detail, following procedure, and being dependable. It is a trade where safety, preparation, and discipline directly affect the quality of the work.
+          </p>
+        </div>
+        <div class="card span-8 reveal left">
+          <div class="kicker">Interests</div>
+          <h3>What I do outside of class</h3>
+          <p>
+            Outside of school, I focus on maintaining a structured routine, improving my physical fitness, and working on personal projects that strengthen my problem-solving and planning skills. I value consistency, learning, and long-term growth more than doing things halfway.
+          </p>
+        </div>
+        <div class="card span-4 reveal right">
+          <div class="kicker">Professional Focus</div>
+          <h3>What I bring</h3>
+          <div class="tag-list">
+            <span class="tag">Reliability</span>
+            <span class="tag">Safety Awareness</span>
+            <span class="tag">Discipline</span>
+            <span class="tag">Teamwork</span>
+            <span class="tag">Attention to Detail</span>
+            <span class="tag">Work Ethic</span>
+          </div>
+        </div>
+      </div>
+    </section><section id="goals">
+  <h2 class="section-title reveal">Goals</h2>
+  <div class="grid">
+    <div class="card span-6 reveal left">
+      <div class="kicker">Short-Term Goals</div>
+      <ul>
+        <li>Continue building strong electrical fundamentals and safe work habits.</li>
+        <li>Secure an apprenticeship opportunity and gain more hands-on site experience.</li>
+        <li>Become known as someone who is punctual, dependable, and willing to learn.</li>
+        <li>Improve both speed and accuracy without sacrificing safety.</li>
+      </ul>
+    </div>
+    <div class="card span-6 reveal right">
+      <div class="kicker">Long-Term Goals</div>
+      <ul>
+        <li>Become a Red Seal Electrician.</li>
+        <li>Build experience in both residential and commercial environments.</li>
+        <li>Develop advanced troubleshooting skills and strong on-site confidence.</li>
+        <li>Create a stable, high-value career in the skilled trades.</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
-<section class="fade-in">
-    <h2>My Impressions</h2>
-    <div class="card">
-        <p>
-        The electrical trade requires more than just effort. It demands attention to detail, safety awareness, and consistency.
-        My experience so far has shown that being reliable and following procedures correctly is just as important as technical ability.
-        </p>
+<section id="resume">
+  <h2 class="section-title reveal">Resume</h2>
+  <p class="section-sub reveal">
+    This section recreates my resume directly on the site, including my summary, skills, experience, education, and certifications.
+  </p>
+  <div class="grid">
+    <div class="card span-12 reveal">
+      <div class="kicker">Professional Summary</div>
+      <p>
+        Disciplined and reliable worker with a background in structured, routine-based environments through Canadian Armed Forces training and hands-on roles. Experienced in following written procedures, maintaining clean and safe workspaces, and completing tasks with consistency and accuracy. WHMIS certified, First Aid trained, and committed to building a long-term career in the construction electrical trade.
+      </p>
     </div>
+
+    <div class="card span-6 reveal left">
+      <div class="kicker">Core Skills</div>
+      <ul>
+        <li>WHMIS Certified</li>
+        <li>First Aid Training</li>
+        <li>Workplace safety awareness</li>
+        <li>Attention to detail</li>
+        <li>Time management</li>
+        <li>Strong work ethic</li>
+        <li>Team-oriented mindset</li>
+        <li>Comfortable with computers and web-based tools</li>
+      </ul>
+    </div>
+
+    <div class="card span-6 reveal right">
+      <div class="kicker">Additional Strengths</div>
+      <ul>
+        <li>Ability to work independently with minimal supervision</li>
+        <li>Experience maintaining organized work environments</li>
+        <li>Physically capable of handling demanding tasks</li>
+        <li>Adaptable in structured, routine-based settings</li>
+        <li>BC Driver's License: Class N</li>
+        <li>Strong punctuality and consistency</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
-<section class="fade-in">
-    <h2>My Goals</h2>
-    <div class="card">
-        <h3>Short-Term</h3>
-        <ul>
-            <li>Secure an electrical apprenticeship</li>
-            <li>Develop strong tool and wiring fundamentals</li>
-            <li>Become dependable on job sites</li>
-        </ul>
-
-        <h3>Long-Term</h3>
-        <ul>
-            <li>Become a Red Seal Electrician</li>
-            <li>Gain experience in commercial and residential projects</li>
-            <li>Build a stable, high-income career</li>
-        </ul>
+<section id="experience">
+  <h2 class="section-title reveal">Experience</h2>
+  <div class="card reveal">
+    <div class="timeline-item">
+      <div class="timeline-top">
+        <h3>Canadian Armed Forces — Combat Engineer</h3>
+        <div class="date">Aug 2022 – Nov 2024</div>
+      </div>
+      <p>Gagetown, NB</p>
+      <ul>
+        <li>Completed Basic Military Qualification, demonstrating discipline, reliability, and adherence to structured routines.</li>
+        <li>Transported materials and operated equipment safely while following strict written protocols.</li>
+        <li>Maintained clean and organized workspaces to support efficiency and safety.</li>
+        <li>Built familiarity with WHMIS procedures, fire safety concepts, equipment maintenance, and physically demanding work.</li>
+      </ul>
     </div>
+
+    <div class="timeline-item">
+      <div class="timeline-top">
+        <h3>Party City Corporation — Retail Sales Associate</h3>
+        <div class="date">Jun 2022 – Aug 2022</div>
+      </div>
+      <p>Brampton, ON</p>
+      <ul>
+        <li>Restocked shelves, organized inventory, and maintained accurate stock levels.</li>
+        <li>Kept aisles and displays clean and presentable to store standards.</li>
+        <li>Worked efficiently under time constraints while completing daily task lists.</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-top">
+        <h3>Peel District School Board — Teacher Assistant</h3>
+        <div class="date">Feb 2022 – Jun 2022</div>
+      </div>
+      <p>Brampton, ON</p>
+      <ul>
+        <li>Supported teachers and helped manage student activities in a structured environment.</li>
+        <li>Maintained safety standards and sanitized equipment before use.</li>
+        <li>Helped organize classes and activities while keeping the space clean and functional.</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-top">
+        <h3>Self-Employed — Babysitter</h3>
+        <div class="date">Oct 2018 – Sep 2021</div>
+      </div>
+      <p>Brampton, ON</p>
+      <ul>
+        <li>Ensured safety and well-being for children in a private household setting.</li>
+        <li>Prepared simple meals, maintained clean common areas, and supported structured routines.</li>
+        <li>Built trust with families through clear communication and consistency.</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
-<section class="fade-in">
-    <h2>Hobbies / Interests</h2>
-    <div class="card">
-        <p>
-        I spend time working on structured personal projects such as game development, which strengthens my problem-solving and system-thinking abilities.
-        I also focus on maintaining a consistent routine and improving my physical fitness.
-        </p>
+<section id="achievements">
+  <h2 class="section-title reveal">Achievements & Certifications</h2>
+  <div class="grid">
+    <div class="card span-6 reveal left">
+      <div class="kicker">Achievements</div>
+      <ul>
+        <li>Completed Basic Military Qualification through the Canadian Armed Forces.</li>
+        <li>Successfully completed First Aid training with a final score of 82%.</li>
+        <li>Built a structured daily routine balancing school, transportation, and independent responsibilities.</li>
+        <li>Maintained strong standards for cleanliness, organization, and procedure-based work.</li>
+      </ul>
     </div>
+    <div class="card span-6 reveal right">
+      <div class="kicker">Certificates</div>
+      <ul>
+        <li>WHMIS Certified</li>
+        <li>First Aid Trained</li>
+        <li>Fire safety and equipment familiarity through military training</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
-<section class="fade-in">
-    <h2>Resume</h2>
-    <div class="card">
-        <p>
-        Download Resume: (Upload your PDF to GitHub and paste link here)
-        </p>
-
-        <ul>
-            <li>WHMIS Certified</li>
-            <li>First Aid Certified</li>
-            <li>BC Driver’s License (Class N)</li>
-        </ul>
+<section id="education">
+  <h2 class="section-title reveal">Education & Volunteer Work</h2>
+  <div class="grid">
+    <div class="card span-6 reveal left">
+      <div class="kicker">Education</div>
+      <h3>North Park Secondary School</h3>
+      <p>High School Diploma — Brampton, ON</p>
     </div>
+    <div class="card span-6 reveal right">
+      <div class="kicker">Volunteer Experience</div>
+      <ul>
+        <li>Youth Program Volunteer — Harold F. Loughin</li>
+        <li>Special Needs Volunteer — Century Gardens Recreation Centre</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
-<section class="fade-in">
-    <h2>Experience</h2>
-    <div class="card">
-        <h3>Canadian Armed Forces – Combat Engineer</h3>
-        <p>Aug 2022 – Nov 2023</p>
-        <ul>
-            <li>Completed Basic Military Qualification with strong discipline and structure</li>
-            <li>Handled equipment and materials safely under strict procedures</li>
-            <li>Maintained clean and organized work environments</li>
-            <li>Followed WHMIS and fire safety protocols</li>
-        </ul>
-
-        <h3>Retail Sales Associate – Party City</h3>
-        <ul>
-            <li>Managed inventory and maintained store organization</li>
-            <li>Worked efficiently under time constraints</li>
-        </ul>
-
-        <h3>Teacher Assistant</h3>
-        <ul>
-            <li>Managed groups of students and ensured safety during activities</li>
-            <li>Maintained clean and structured environments</li>
-        </ul>
-    </div>
+<section id="contact">
+  <h2 class="section-title reveal">Contact</h2>
+  <div class="card contact-box reveal">
+    <div><strong>Email:</strong> <a href="mailto:jovanisam123@gmail.com">jovanisam123@gmail.com</a></div>
+    <div><strong>Phone:</strong> <a href="tel:4374226153">437-422-6153</a></div>
+    <div><strong>Location:</strong> Port Moody / Metro Vancouver, BC</div>
+  </div>
 </section>
 
-<section class="fade-in">
-    <h2>Achievements</h2>
-    <div class="card">
-        <ul>
-            <li>Completed military training (BMQ)</li>
-            <li>WHMIS Certification</li>
-            <li>First Aid Training</li>
-            <li>Maintained disciplined, structured work habits</li>
-        </ul>
-    </div>
-</section>
+  </main>  <footer>
+    © 2026 Jovani Sam-Burgin
+  </footer>  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.14,
+      rootMargin: '0px 0px -40px 0px'
+    });
 
-<section class="fade-in">
-    <h2>Projects</h2>
-    <div class="card">
-        <ul>
-            <li>Electrical training fundamentals (tools, safety, basic circuits)</li>
-            <li>Independent Roblox system development (logic + problem solving)</li>
-        </ul>
-    </div>
-</section>
-
-<section class="fade-in">
-    <h2>Certificates</h2>
-    <div class="card">
-        <ul>
-            <li>WHMIS Certified</li>
-            <li>First Aid Certified</li>
-        </ul>
-    </div>
-</section>
-
-<section class="fade-in">
-    <h2>Contact</h2>
-    <div class="card">
-        <p>Email: jovanisam123@gmail.com</p>
-        <p>Location: Port Moody / Metro Vancouver</p>
-        <p>Phone: 437-422-6153</p>
-    </div>
-</section>
-
-<footer>
-    <p>© 2026 Jovani Sam-Burgin</p>
-</footer>
-
-</body>
+    document.querySelectorAll('.reveal').forEach((el, index) => {
+      if (!el.classList.contains('visible')) {
+        el.style.transitionDelay = `${Math.min(index * 40, 240)}ms`;
+      }
+      observer.observe(el);
+    });
+  </script></body>
 </html>
