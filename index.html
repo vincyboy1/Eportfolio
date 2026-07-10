@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neon">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07111f" />
+  <meta name="description" content="Circuit Grind is a 163-question CEC 2024 and structured-cabling study game with hardcore resets, practice modes, stats, streaks, and offline support." />
+  <title>Circuit Grind — CEC & Cabling Study Arena</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#app">Skip to study content</a>
+  <div class="site-shell">
+    <header class="topbar">
+      <button class="brand-button" id="homeButton" type="button" aria-label="Return to Circuit Grind home">
+        <span class="brand-mark" aria-hidden="true">ϟ</span>
+        <span><strong>Circuit Grind</strong><small>CEC & Cabling Study Arena</small></span>
+      </button>
+      <div class="top-actions">
+        <span class="status-pill" id="networkStatus"><span class="status-dot"></span><span>Online</span></span>
+        <button class="icon-button" id="soundButton" type="button" aria-label="Toggle sound" title="Toggle sound">♪</button>
+        <button class="icon-button" id="themeButton" type="button" aria-label="Change colour theme" title="Change theme">◐</button>
+        <button class="install-button hidden" id="installButton" type="button">Install app</button>
+      </div>
+    </header>
+
+    <main id="app" tabindex="-1" aria-live="polite"></main>
+
+    <footer class="site-footer">
+      <p>Study aid only. Verify field work against the locally adopted 2024 CEC, provincial amendments, building/fire codes, project documents, listed product instructions, and the authority having jurisdiction.</p>
+      <p>Keyboard: <kbd>1</kbd>–<kbd>4</kbd> or <kbd>A</kbd>–<kbd>D</kbd> to answer, <kbd>Enter</kbd> to continue.</p>
+    </footer>
+  </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="assertive" aria-atomic="true"></div>
+
+  <script src="data/install.js"></script>
+  <script src="data/cec.js"></script>
+  <script src="data/fundamentals.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

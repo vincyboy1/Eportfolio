@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neon">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07111f" />
+  <meta name="description" content="Circuit Grind is a 163-question CEC 2024 and structured-cabling study game with hardcore resets, practice modes, stats, streaks, and offline support." />
+  <title>Circuit Grind — CEC & Cabling Study Arena</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <style>
+:root {
+  color-scheme: dark;
+  --bg: #050b14;
+  --bg-soft: #081321;
+  --panel: rgba(13, 27, 44, 0.88);
+  --panel-solid: #0d1b2c;
+  --panel-2: rgba(18, 37, 58, 0.9);
+  --text: #eef8ff;
+  --muted: #91a9bb;
+  --faint: #647b8c;
+  --line: rgba(168, 216, 245, 0.16);
+  --line-strong: rgba(168, 216, 245, 0.28);
+  --primary: #4be3ff;
+  --primary-2: #89ffb4;
+  --primary-soft: rgba(75, 227, 255, 0.12);
+  --danger: #ff6978;
+  --danger-soft: rgba(255, 105, 120, 0.13);
+  --warning: #ffc65c;
+  --warning-soft: rgba(255, 198, 92, 0.13);
+  --success: #7dffb0;
+  --success-soft: rgba(125, 255, 176, 0.13);
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+  --radius: 22px;
+  --radius-sm: 14px;
+  --max: 1180px;
+}
+
+html[data-theme="blueprint"] {
+  --bg: #07101d;
+  --bg-soft: #0a1729;
+  --panel: rgba(12, 31, 54, 0.9);
+  --panel-solid: #0c1f36;
+  --panel-2: rgba(17, 43, 73, 0.94);
+  --primary: #6cb8ff;
+  --primary-2: #d5ecff;
+  --primary-soft: rgba(108, 184, 255, 0.13);
+}
+
+html[data-theme="ember"] {
+  --bg: #130906;
+  --bg-soft: #211009;
+  --panel: rgba(39, 19, 13, 0.9);
+  --panel-solid: #2b160f;
+  --panel-2: rgba(57, 28, 18, 0.94);
+  --line: rgba(255, 205, 166, 0.16);
+  --line-strong: rgba(255, 205, 166, 0.28);
+  --primary: #ff9a56;
+  --primary-2: #ffe29a;
+  --primary-soft: rgba(255, 154, 86, 0.13);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 14% 4%, color-mix(in srgb, var(--primary) 15%, transparent), transparent 31rem),
+    radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--primary-2) 9%, transparent), transparent 28rem),
+    linear-gradient(155deg, var(--bg-soft), var(--bg) 58%);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+  opacity: 0.17;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
+button, select, input { font: inherit; }
+button { color: inherit; }
+button, label, select { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary) 72%, white);
+  outline-offset: 3px;
+}
+
+.hidden { display: none !important; }
+
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -80px;
+  z-index: 1000;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #00131a;
+  font-weight: 900;
+  transition: top 0.2s ease;
+}
+.skip-link:focus { top: 16px; }
+
+.site-shell { width: min(100%, 1500px); min-height: 100vh; margin: 0 auto; }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: min(var(--max), calc(100% - 32px));
+  margin: 0 auto;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.brand-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.brand-mark {
+  display: grid;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--primary) 36%, transparent);
+  border-radius: 13px;
+  background: linear-gradient(145deg, var(--primary-soft), transparent);
+  color: var(--primary);
+  font-size: 1.55rem;
+  font-weight: 1000;
+  box-shadow: inset 0 0 24px color-mix(in srgb, var(--primary) 9%, transparent);
+}
+.brand-button strong { display: block; letter-spacing: -0.02em; }
+.brand-button small { display: block; overflow: hidden; color: var(--muted); font-size: 0.72rem; text-overflow: ellipsis; white-space: nowrap; }
+
+.top-actions { display: flex; align-items: center; gap: 8px; }
+.status-pill, .install-button, .icon-button {
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--panel-solid) 86%, transparent);
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 11px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 12px var(--success); }
+.status-pill.offline .status-dot { background: var(--warning); box-shadow: 0 0 12px var(--warning); }
+.icon-button {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 12px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.icon-button:hover { border-color: var(--line-strong); color: var(--text); }
+.icon-button.active { border-color: color-mix(in srgb, var(--primary) 42%, transparent); color: var(--primary); background: var(--primary-soft); }
+.install-button { padding: 9px 13px; border-radius: 12px; cursor: pointer; }
+
+#app { width: min(var(--max), calc(100% - 32px)); min-height: 70vh; margin: 0 auto; padding: 42px 0 64px; }
+
+.site-footer {
+  width: min(var(--max), calc(100% - 32px));
+  margin: 0 auto;
+  padding: 22px 0 36px;
+  border-top: 1px solid var(--line);
+  color: var(--faint);
+  font-size: 0.78rem;
+}
+.site-footer p { max-width: 900px; margin: 4px 0; }
+kbd { padding: 2px 6px; border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 6px; background: var(--panel-solid); color: var(--muted); font-size: 0.72rem; }
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--primary);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  gap: 26px;
+  align-items: stretch;
+  margin-bottom: 30px;
+}
+.hero-copy, .rank-card, .panel, .quiz-card, .result-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--panel) 96%, transparent), color-mix(in srgb, var(--panel-solid) 90%, transparent));
+  box-shadow: var(--shadow);
+}
+.hero-copy { position: relative; overflow: hidden; padding: clamp(26px, 5vw, 54px); }
+.hero-copy::after {
+  position: absolute;
+  right: -110px;
+  bottom: -155px;
+  width: 360px;
+  height: 360px;
+  border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+  border-radius: 50%;
+  content: "";
+  box-shadow: 0 0 0 42px color-mix(in srgb, var(--primary) 4%, transparent), 0 0 0 90px color-mix(in srgb, var(--primary) 3%, transparent);
+}
+.hero h1 { position: relative; z-index: 1; max-width: 760px; margin: 0; font-size: clamp(2.65rem, 8vw, 5.8rem); line-height: 0.9; letter-spacing: -0.072em; }
+.hero h1 span { color: var(--primary); }
+.hero-copy > p:not(.eyebrow) { position: relative; z-index: 1; max-width: 680px; margin: 24px 0 0; color: var(--muted); font-size: clamp(1rem, 2.3vw, 1.14rem); }
+.hero-actions { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+
+.primary-button, .secondary-button, .danger-button, .text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 11px 17px;
+  border-radius: 13px;
+  font-weight: 850;
+  cursor: pointer;
+  transition: transform 0.16s ease, filter 0.16s ease, border-color 0.16s ease;
+}
+.primary-button { border: 0; background: linear-gradient(105deg, var(--primary), var(--primary-2)); color: #001219; box-shadow: 0 14px 34px color-mix(in srgb, var(--primary) 18%, transparent); }
+.secondary-button { border: 1px solid var(--line-strong); background: var(--panel-2); color: var(--text); }
+.danger-button { border: 1px solid color-mix(in srgb, var(--danger) 38%, transparent); background: var(--danger-soft); color: var(--danger); }
+.text-button { min-height: auto; padding: 6px 8px; border: 0; background: transparent; color: var(--muted); }
+.primary-button:hover, .secondary-button:hover, .danger-button:hover { transform: translateY(-1px); filter: brightness(1.07); }
+.primary-button:disabled, .secondary-button:disabled { cursor: not-allowed; filter: grayscale(0.5); opacity: 0.45; transform: none; }
+
+.rank-card { display: flex; flex-direction: column; justify-content: space-between; padding: 26px; }
+.rank-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.rank-level { display: grid; width: 70px; height: 70px; place-items: center; border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent); border-radius: 20px; background: var(--primary-soft); color: var(--primary); font-size: 1.75rem; font-weight: 1000; }
+.rank-card h2 { margin: 18px 0 3px; font-size: 1.45rem; }
+.rank-card p { margin: 0; color: var(--muted); }
+.xp-track, .progress-track, .timer-track { overflow: hidden; height: 9px; border-radius: 999px; background: rgba(255,255,255,0.07); }
+.xp-track { margin-top: 20px; }
+.xp-fill, .progress-fill, .timer-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--primary), var(--primary-2)); transition: width 0.35s ease; }
+.rank-meta { display: flex; justify-content: space-between; margin-top: 8px; color: var(--faint); font-size: 0.78rem; }
+
+.dashboard-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start; }
+.main-stack, .side-stack { display: grid; gap: 24px; }
+.panel { padding: clamp(20px, 4vw, 30px); }
+.panel-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin-bottom: 20px; }
+.panel-heading h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.7rem); letter-spacing: -0.035em; }
+.panel-heading p { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+.count-badge, .mode-badge, .review-badge, .boss-badge, .category-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  background: rgba(255,255,255,0.03);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.review-badge { border-color: color-mix(in srgb, var(--warning) 38%, transparent); color: var(--warning); background: var(--warning-soft); }
+.boss-badge { border-color: color-mix(in srgb, var(--danger) 38%, transparent); color: var(--danger); background: var(--danger-soft); }
+
+.mode-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.mode-card { position: relative; display: block; min-height: 142px; padding: 18px; border: 1px solid var(--line); border-radius: 17px; background: rgba(255,255,255,0.025); cursor: pointer; transition: border-color .17s ease, transform .17s ease, background .17s ease; }
+.mode-card:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+.mode-card input { position: absolute; opacity: 0; pointer-events: none; }
+.mode-card.selected { border-color: color-mix(in srgb, var(--primary) 48%, transparent); background: var(--primary-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 14%, transparent); }
+.mode-icon { display: grid; width: 36px; height: 36px; place-items: center; border-radius: 11px; background: var(--panel-2); color: var(--primary); font-weight: 1000; }
+.mode-card strong { display: block; margin-top: 16px; }
+.mode-card small { display: block; margin-top: 4px; color: var(--muted); line-height: 1.4; }
+
+.bank-list { display: grid; gap: 10px; }
+.bank-card { position: relative; display: grid; grid-template-columns: auto 1fr auto; gap: 13px; align-items: center; padding: 16px; border: 1px solid var(--line); border-radius: 15px; background: rgba(255,255,255,0.022); cursor: pointer; }
+.bank-card:hover { border-color: var(--line-strong); }
+.bank-card input { width: 19px; height: 19px; accent-color: var(--primary); }
+.bank-card strong { display: block; }
+.bank-card small { display: block; margin-top: 3px; color: var(--muted); }
+.bank-count { color: var(--primary); font-weight: 900; }
+
+.filter-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: end; margin-top: 18px; }
+.select-label { display: grid; gap: 7px; color: var(--muted); font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; }
+.select-label select { width: 100%; min-height: 46px; padding: 10px 38px 10px 12px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--panel-solid); color: var(--text); }
+
+.start-panel { position: sticky; bottom: 14px; display: grid; gap: 10px; padding: 14px; border: 1px solid color-mix(in srgb, var(--primary) 28%, transparent); border-radius: 18px; background: color-mix(in srgb, var(--panel-solid) 92%, transparent); box-shadow: 0 18px 50px rgba(0,0,0,.35); backdrop-filter: blur(16px); }
+.start-summary { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: .82rem; }
+.start-summary strong { color: var(--text); }
+
+.stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.stat-tile { padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.022); }
+.stat-tile strong { display: block; font-size: 1.45rem; letter-spacing: -.04em; }
+.stat-tile span { color: var(--muted); font-size: .75rem; }
+
+.achievement-list { display: grid; gap: 9px; }
+.achievement { display: grid; grid-template-columns: 38px 1fr; gap: 11px; align-items: center; padding: 11px; border: 1px solid var(--line); border-radius: 13px; opacity: .45; }
+.achievement.unlocked { opacity: 1; border-color: color-mix(in srgb, var(--primary) 28%, transparent); background: var(--primary-soft); }
+.achievement-icon { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 11px; background: var(--panel-2); }
+.achievement strong, .achievement small { display: block; }
+.achievement small { color: var(--muted); }
+
+.daily-card { overflow: hidden; position: relative; }
+.daily-card::after { position: absolute; right: -30px; top: -40px; content: "10"; color: var(--primary-soft); font-size: 10rem; font-weight: 1000; line-height: 1; }
+.daily-card > * { position: relative; z-index: 1; }
+
+.quiz-layout { display: grid; gap: 18px; }
+.quiz-hud { display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: 18px; align-items: center; }
+.hud-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hud-metric { min-width: 76px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); text-align: center; }
+.hud-metric strong { display: block; font-size: 1rem; }
+.hud-metric span { color: var(--muted); font-size: .67rem; text-transform: uppercase; letter-spacing: .08em; }
+.quiz-progress { min-width: 0; }
+.quiz-progress-label { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 7px; color: var(--muted); font-size: .76rem; }
+
+.quiz-card { position: relative; overflow: hidden; padding: clamp(22px, 5vw, 44px); }
+.quiz-card.boss { border-color: color-mix(in srgb, var(--danger) 34%, transparent); box-shadow: 0 24px 90px color-mix(in srgb, var(--danger) 9%, transparent); }
+.question-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 19px; }
+.question-number { margin-left: auto; color: var(--faint); font-size: .77rem; font-weight: 800; }
+.question-title { max-width: 950px; margin: 0; font-size: clamp(1.38rem, 4vw, 2.35rem); line-height: 1.17; letter-spacing: -.035em; }
+.question-note { margin: 13px 0 0; color: var(--warning); font-size: .82rem; }
+.option-list { display: grid; gap: 11px; margin-top: 30px; }
+.option-button { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 13px; align-items: center; width: 100%; min-height: 66px; padding: 12px 15px; border: 1px solid var(--line); border-radius: 15px; background: rgba(255,255,255,.025); color: var(--text); text-align: left; cursor: pointer; transition: transform .15s ease, border-color .15s ease, background .15s ease; }
+.option-button:hover:not(:disabled) { transform: translateX(3px); border-color: color-mix(in srgb, var(--primary) 35%, transparent); background: var(--primary-soft); }
+.option-button:disabled { cursor: default; }
+.option-key { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid var(--line-strong); border-radius: 11px; background: var(--panel-solid); color: var(--muted); font-weight: 900; }
+.option-button.correct { border-color: color-mix(in srgb, var(--success) 54%, transparent); background: var(--success-soft); }
+.option-button.correct .option-key { border-color: var(--success); color: var(--success); }
+.option-button.wrong { border-color: color-mix(in srgb, var(--danger) 55%, transparent); background: var(--danger-soft); animation: shake .28s ease; }
+.option-button.wrong .option-key { border-color: var(--danger); color: var(--danger); }
+
+.feedback-box { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: start; margin-top: 20px; padding: 17px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel-2); }
+.feedback-box.success { border-color: color-mix(in srgb, var(--success) 34%, transparent); }
+.feedback-box.error { border-color: color-mix(in srgb, var(--danger) 34%, transparent); }
+.feedback-icon { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 12px; background: var(--panel-solid); font-weight: 1000; }
+.feedback-box.success .feedback-icon { color: var(--success); }
+.feedback-box.error .feedback-icon { color: var(--danger); }
+.feedback-box h3 { margin: 0 0 4px; }
+.feedback-box p { margin: 0; color: var(--muted); }
+.feedback-box .review-note { margin-top: 7px; color: var(--warning); font-size: .8rem; }
+
+.reset-overlay { display: grid; place-items: center; min-height: 220px; padding: 30px; text-align: center; }
+.reset-overlay .reset-number { color: var(--danger); font-size: clamp(4rem, 16vw, 8rem); font-weight: 1000; line-height: .9; }
+.reset-overlay h2 { margin: 12px 0 4px; }
+.reset-overlay p { max-width: 560px; margin: 0; color: var(--muted); }
+
+.result-card { max-width: 820px; margin: 20px auto; padding: clamp(26px, 6vw, 54px); text-align: center; }
+.result-icon { display: grid; width: 86px; height: 86px; margin: 0 auto 20px; place-items: center; border: 1px solid color-mix(in srgb, var(--primary) 38%, transparent); border-radius: 25px; background: var(--primary-soft); color: var(--primary); font-size: 2.4rem; font-weight: 1000; }
+.result-card h1 { margin: 0; font-size: clamp(2.1rem, 7vw, 4.4rem); line-height: .95; letter-spacing: -.06em; }
+.result-card > p { max-width: 620px; margin: 18px auto; color: var(--muted); }
+.result-stats { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin: 26px 0; }
+.result-stats .stat-tile { text-align: left; }
+.result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+
+.toast-stack { position: fixed; right: 16px; bottom: 16px; z-index: 100; display: grid; gap: 9px; width: min(360px, calc(100% - 32px)); pointer-events: none; }
+.toast { padding: 13px 15px; border: 1px solid var(--line-strong); border-radius: 13px; background: var(--panel-solid); box-shadow: var(--shadow); animation: toast-in .25s ease both; }
+.toast strong { display: block; }
+.toast span { display: block; margin-top: 2px; color: var(--muted); font-size: .82rem; }
+.toast.bonus { border-color: color-mix(in srgb, var(--warning) 42%, transparent); }
+
+@keyframes shake { 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-3px); } }
+@keyframes toast-in { from { opacity: 0; transform: translateY(10px) scale(.98); } }
+@keyframes pulse { 50% { transform: scale(1.025); } }
+
+@media (max-width: 900px) {
+  .hero, .dashboard-grid { grid-template-columns: 1fr; }
+  .side-stack { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .start-panel { position: static; }
+}
+
+@media (max-width: 680px) {
+  .topbar { width: min(100% - 22px, var(--max)); padding: 12px 0; }
+  #app, .site-footer { width: min(100% - 22px, var(--max)); }
+  #app { padding-top: 26px; }
+  .status-pill { display: none; }
+  .brand-button small { max-width: 160px; }
+  .hero-copy { padding: 27px 22px; }
+  .hero h1 { font-size: clamp(2.6rem, 15vw, 4.5rem); }
+  .mode-grid, .side-stack { grid-template-columns: 1fr; }
+  .filter-row { grid-template-columns: 1fr; }
+  .quiz-hud { grid-template-columns: 1fr; }
+  .quiz-progress { order: -1; }
+  .hud-group { justify-content: space-between; }
+  .hud-metric { flex: 1 1 70px; }
+  .option-button { grid-template-columns: 36px minmax(0,1fr); padding: 11px; }
+  .option-key { width: 34px; height: 34px; }
+  .feedback-box { grid-template-columns: auto minmax(0, 1fr); }
+  .feedback-box .primary-button { grid-column: 1 / -1; width: 100%; }
+  .result-stats { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#app">Skip to study content</a>
+  <div class="site-shell">
+    <header class="topbar">
+      <button class="brand-button" id="homeButton" type="button" aria-label="Return to Circuit Grind home">
+        <span class="brand-mark" aria-hidden="true">ϟ</span>
+        <span><strong>Circuit Grind</strong><small>CEC & Cabling Study Arena</small></span>
+      </button>
+      <div class="top-actions">
+        <span class="status-pill" id="networkStatus"><span class="status-dot"></span><span>Online</span></span>
+        <button class="icon-button" id="soundButton" type="button" aria-label="Toggle sound" title="Toggle sound">♪</button>
+        <button class="icon-button" id="themeButton" type="button" aria-label="Change colour theme" title="Change theme">◐</button>
+        <button class="install-button hidden" id="installButton" type="button">Install app</button>
+      </div>
+    </header>
+
+    <main id="app" tabindex="-1" aria-live="polite"></main>
+
+    <footer class="site-footer">
+      <p>Study aid only. Verify field work against the locally adopted 2024 CEC, provincial amendments, building/fire codes, project documents, listed product instructions, and the authority having jurisdiction.</p>
+      <p>Keyboard: <kbd>1</kbd>–<kbd>4</kbd> or <kbd>A</kbd>–<kbd>D</kbd> to answer, <kbd>Enter</kbd> to continue.</p>
+    </footer>
+  </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="assertive" aria-atomic="true"></div>
+
+  <script>
+window.CG_BANKS=window.CG_BANKS||[];window.CG_BANKS.push({"id":"install","title":"Cable Installation & Testing","shortTitle":"Install & Test","description":"Safety, pathways, pulling, termination, fibre, certification, and bonding.","accent":"cyan","questions":[{"id":"install-001","sourceNumber":1,"question":"According to safety principles in cable installation, whose responsibility is safety?","options":["Only the project manager","Only the customer","Everyone's responsibility","Only the safety inspector"],"answer":2,"category":"Safety","explanation":"Every worker has a duty to recognize hazards, follow procedures, and protect themselves and others.","review":false,"note":""},{"id":"install-002","sourceNumber":2,"question":"When should safety training be initiated for cable installation employees?","options":["Immediately after an accident occurs","On an ongoing basis","Only during the initial hiring process","Right before a major audit"],"answer":1,"category":"Safety","explanation":"Training starts before work and continues as hazards, equipment, procedures, and regulations change.","review":false,"note":""},{"id":"install-003","sourceNumber":3,"question":"What is a specific responsibility of the cabling installer regarding site safety?","options":["To redesign the building's electrical grid","To pay attention to site-specific safety issues","To ignore minor safety infractions to save time","To delegate all safety checks to the customer"],"answer":1,"category":"Safety","explanation":"Installers must assess and respond to the actual hazards present at each work site.","review":false,"note":""},{"id":"install-004","sourceNumber":4,"question":"Why should an installer be especially aware of the consequences of powering equipment on or off?","options":["It affects the architectural design of the room","It can have unforeseen consequences for other employees and active systems","It changes the cable's physical colour","It increases the physical weight of the rack"],"answer":1,"category":"Safety","explanation":"Operating live equipment can interrupt services, create hazards, or affect systems and people outside the immediate work area.","review":false,"note":""},{"id":"install-005","sourceNumber":5,"question":"Why is a professional attitude critical for a cable installer when interacting with customers?","options":["Customers can always judge the exact internal data-transmission speed","Customers may not be able to judge fine technical details except whether the system works","Customers must approve every individual termination technique","Customers are responsible for providing the tools"],"answer":1,"category":"Professionalism","explanation":"Customers often evaluate the installer through reliability, conduct, communication, appearance, and whether the finished system performs.","review":false,"note":""},{"id":"install-006","sourceNumber":6,"question":"Which of the following is an indicator of professionalism that a customer will judge you on?","options":["The brand of testing equipment used","Attention to detail concerning clothing and appropriate safety gear","Your ability to work completely alone without a team","The length of your commute to the site"],"answer":1,"category":"Professionalism","explanation":"Appropriate clothing and PPE visibly demonstrate preparation, competence, and respect for the site.","review":false,"note":""},{"id":"install-007","sourceNumber":7,"question":"Because telecommunications installations can be complex, you will most likely work as part of:","options":["A completely isolated unit","A team, perhaps involving more than one company","A government regulatory board","An independent software-development group"],"answer":1,"category":"Professionalism","explanation":"Structured-cabling projects commonly require coordination among installers, electricians, IT staff, contractors, designers, and customers.","review":false,"note":""},{"id":"install-008","sourceNumber":8,"question":"Which safety gear is explicitly expected by customers as a sign of professionalism?","options":["Safety gear such as hard hats, gloves, and goggles","Standard athletic footwear","Casual business attire","Welding masks"],"answer":0,"category":"Safety","explanation":"Task-appropriate PPE is a basic indicator that an installer is ready to work safely.","review":false,"note":""},{"id":"install-009","sourceNumber":9,"question":"What is the primary purpose of a telecommunications pathway?","options":["To route electrical utility power to the building","To provide a designated path for placing telecommunications cables","To store backup batteries and generators","To serve as an emergency exit path"],"answer":1,"category":"Pathways","explanation":"A telecommunications pathway is the physical route—such as conduit, tray, raceway, or support system—used to contain or support cabling.","review":false,"note":""},{"id":"install-010","sourceNumber":10,"question":"Which type of pathway is typically used to route cables between floors in a multi-storey building?","options":["Horizontal pathway","Backbone/vertical pathway","Perimeter raceway","Underfloor duct"],"answer":1,"category":"Pathways","explanation":"Backbone or vertical pathways connect telecommunications spaces on different floors.","review":false,"note":""},{"id":"install-011","sourceNumber":11,"question":"What is the maximum fill capacity commonly recommended by ANSI/TIA guidance for a new telecommunications conduit installation?","options":["100%","75%","40%","20%"],"answer":2,"category":"Pathways","explanation":"A 40% design fill is commonly used for multi-cable conduit runs to make pulling practical and preserve capacity for growth.","review":true,"note":"Conduit fill can also depend on the number and size of cables and the governing electrical/code rules."},{"id":"install-012","sourceNumber":12,"question":"Why is a 40% fill ratio recommended for new conduit runs?","options":["To allow room for future cable additions and make pulling easier","To prevent the conduit from collapsing under weight","To keep cables from overheating due to data traffic","To save on the cost of copper"],"answer":0,"category":"Pathways","explanation":"Leaving spare space reduces pulling friction and provides capacity for future cables.","review":false,"note":""},{"id":"install-013","sourceNumber":13,"question":"Which enclosure space serves as the centralized point for terminating backbone and horizontal cables?","options":["Entrance Facility (EF)","Telecommunications Room (TR)","Equipment Room (ER)","Work Area (WA)"],"answer":1,"category":"Spaces","explanation":"A telecommunications room normally houses the horizontal cross-connect and interfaces horizontal cabling with backbone cabling.","review":false,"note":""},{"id":"install-014","sourceNumber":14,"question":"What type of pathway is installed above suspended ceilings using J-hooks or cable trays?","options":["Underground pathway","Plenum/ceiling pathway","Direct-buried pathway","Perimeter pathway"],"answer":1,"category":"Pathways","explanation":"J-hooks and cable trays are commonly used to support communications cabling in accessible ceiling spaces, subject to fire-rating rules.","review":false,"note":""},{"id":"install-015","sourceNumber":15,"question":"What must be done when a cable pathway breaches a fire-rated wall or floor?","options":["The pathway must be rerouted entirely","A qualified firestop system must be installed to seal the penetration","The cables must be wrapped in electrical tape","The opening must be left open for ventilation"],"answer":1,"category":"Firestopping","explanation":"A listed and properly installed firestop system restores the fire-resistance rating at a penetration.","review":false,"note":""},{"id":"install-016","sourceNumber":16,"question":"Which type of cable tray provides continuous support along the entire length of the cable run?","options":["Ladder tray","Wire-mesh/basket tray","Solid-bottom tray","J-hook system"],"answer":2,"category":"Pathways","explanation":"A solid-bottom tray provides a continuous supporting surface rather than spaced rungs or individual supports.","review":false,"note":""},{"id":"install-017","sourceNumber":17,"question":"What is the maximum permanent-link distance for horizontal balanced copper cabling in a structured-cabling system?","options":["100 metres (328 feet) total, including patch cords","90 metres (295 feet) for the permanent link","50 metres (164 feet) total","150 metres (492 feet) for fibre only"],"answer":1,"category":"Standards","explanation":"The standard horizontal permanent link is limited to 90 m; the complete channel can be up to 100 m with patch cords.","review":false,"note":""},{"id":"install-018","sourceNumber":18,"question":"Horizontal cabling extends from the work-area outlet to which of the following?","options":["The main building entrance facility","The Telecommunications Room (TR) patch panel or horizontal cross-connect","The service provider's central office","The building's lightning rod"],"answer":1,"category":"Horizontal Cabling","explanation":"Horizontal cabling runs from the work-area telecommunications outlet back to the horizontal cross-connect in the TR.","review":false,"note":""},{"id":"install-019","sourceNumber":19,"question":"What type of cable is most commonly used for horizontal voice and data copper connections?","options":["Coaxial cable","Unshielded Twisted Pair (UTP)","Shielded Outer Armored (SOA)","Single-mode fibre-optic cable"],"answer":1,"category":"Copper","explanation":"Four-pair 100-ohm balanced UTP is the most common medium for office horizontal voice and Ethernet cabling.","review":false,"note":""},{"id":"install-020","sourceNumber":20,"question":"Backbone cabling is responsible for connecting which two areas?","options":["Individual workstations within the same room","Telecommunications rooms, equipment rooms, and entrance facilities","Desktop computers to local printers","Light switches to the breaker panel"],"answer":1,"category":"Backbone","explanation":"Backbone cabling interconnects the building's major telecommunications spaces and cross-connects.","review":false,"note":""},{"id":"install-021","sourceNumber":21,"question":"Which type of fibre-optic cable is best suited for long-distance backbone links between buildings?","options":["Multimode OM3","Multimode OM4","Single-mode (OS1/OS2)","Category 6A UTP"],"answer":2,"category":"Fibre","explanation":"Single-mode fibre has much lower modal dispersion and supports longer-distance, high-bandwidth links.","review":false,"note":""},{"id":"install-022","sourceNumber":22,"question":"What is the purpose of the Work Area component in structured cabling?","options":["To house the main network switches and routers","To connect end-user equipment to the horizontal cabling system through outlets","To store patch cords for backup storage","To ground incoming utility lines"],"answer":1,"category":"Work Area","explanation":"The work area includes the outlet, equipment cords, adapters, and user equipment at the endpoint.","review":false,"note":""},{"id":"install-023","sourceNumber":23,"question":"What is the primary consequence of exceeding the maximum pulling tension of a copper data cable?","options":["The outer jacket changes colour","The internal pair geometry can be altered, causing transmission failures such as crosstalk","The cable will automatically melt","The data packet size becomes permanently restricted"],"answer":1,"category":"Installation","explanation":"Excess pulling force can stretch conductors and disturb the pair twists, degrading impedance and crosstalk performance.","review":false,"note":""},{"id":"install-024","sourceNumber":24,"question":"What tool should be used to monitor or ensure that pulling tension is not exceeded during a long pull?","options":["A standard measuring tape","A tension meter or breakaway pulling eye","A cable stripper","An insulation tester"],"answer":1,"category":"Tools","explanation":"A dynamometer/tension meter or correctly rated breakaway swivel limits and verifies pulling force.","review":false,"note":""},{"id":"install-025","sourceNumber":25,"question":"What is the commonly specified minimum bend radius for four-pair UTP cable during installation?","options":["2 times the cable diameter","4 times the cable diameter","8 times the cable diameter","20 times the cable diameter"],"answer":1,"category":"Installation","explanation":"For typical four-pair balanced UTP, a minimum bend radius of about four cable diameters is commonly specified; manufacturer instructions govern.","review":true,"note":"Screened, multipair, and some higher-performance cables can require a larger bend radius."},{"id":"install-026","sourceNumber":26,"question":"For a standard fibre-optic patch cord not under tension, what is a typical minimum bend radius?","options":["10 times the cable diameter","20 times the cable diameter","50 mm in every case","About 30 mm, or roughly 10–12 times the diameter depending on the cord"],"answer":3,"category":"Fibre","explanation":"A common no-load rule is about 10 times the outside diameter; for a 3 mm patch cord that is about 30 mm.","review":true,"note":"Always follow the cable manufacturer's stated static and dynamic bend-radius limits."},{"id":"install-027","sourceNumber":27,"question":"When pulling cable through conduits, what substance is used to reduce friction?","options":["WD-40 or standard motor oil","Specially formulated, cable-compatible non-conductive pulling lubricant","Water and dish soap","Powdered chalk"],"answer":1,"category":"Installation","explanation":"Only a lubricant approved as compatible with the cable jacket and installation environment should be used.","review":false,"note":""},{"id":"install-028","sourceNumber":28,"question":"What is the purpose of using a fish tape during installation?","options":["To measure the exact length of the cable","To pull a string or cable through a conduit run","To strip insulation from high-voltage lines","To label cables inside a patch panel"],"answer":1,"category":"Tools","explanation":"Fish tape is pushed through a pathway and used to draw in a pull string or cable.","review":false,"note":""},{"id":"install-029","sourceNumber":29,"question":"When nesting cables in a tray, bundled configurations should not be tied too tightly in order to prevent:","options":["Excess weight distribution","Alien crosstalk and physical crushing of internal pairs","Discolouration of the cable trays","Dust accumulation"],"answer":1,"category":"Installation","explanation":"Over-tight ties deform the cable and can increase alien crosstalk and other transmission problems.","review":false,"note":""},{"id":"install-030","sourceNumber":30,"question":"What should be left at both ends of a cable run to allow future terminations or re-terminations?","options":["A termination block","A service loop (slack)","A plastic coupling","A grounding clamp"],"answer":1,"category":"Installation","explanation":"Controlled service slack allows future moves, repairs, and re-termination without replacing the entire run.","review":false,"note":""},{"id":"install-031","sourceNumber":31,"question":"Which tool is specifically designed to seat conductors into an Insulation Displacement Connector (IDC) block?","options":["Needle-nose pliers","Wire crimper","Punch-down tool","Side cutters"],"answer":2,"category":"Tools","explanation":"A punch-down tool seats the conductor in the IDC and normally trims the excess conductor.","review":false,"note":""},{"id":"install-032","sourceNumber":32,"question":"What are the two standard colour-coding configurations used for terminating eight-position modular plugs and jacks?","options":["T568A and T568B","IEEE 802.3a and 802.3b","TIA-942A and TIA-942B","USOC and RJ-11"],"answer":0,"category":"Termination","explanation":"T568A and T568B define the recognized pair-to-pin assignments for eight-position balanced-cabling terminations.","review":false,"note":""},{"id":"install-033","sourceNumber":33,"question":"When terminating twisted-pair cable, what is the maximum recommended untwist length to maintain performance?","options":["1 inch (25 mm)","0.5 inch (13 mm)","2 inches (50 mm)","3 inches (75 mm)"],"answer":1,"category":"Termination","explanation":"Pair twists should be maintained to within about 13 mm of the termination for Category-rated balanced cabling.","review":false,"note":""},{"id":"install-034","sourceNumber":34,"question":"Which fibre-optic splicing method uses an electric arc to fuse two glass strands together?","options":["Mechanical splicing","Fusion splicing","Chemical splicing","Adhesive splicing"],"answer":1,"category":"Fibre","explanation":"A fusion splicer aligns the fibres and uses an electric arc to melt and join the glass.","review":false,"note":""},{"id":"install-035","sourceNumber":35,"question":"What is the primary advantage of fusion splicing over mechanical splicing?","options":["It requires no specialized or expensive equipment","It normally produces lower insertion loss and back-reflection","It takes significantly less time to set up","It does not require stripping the cable jacket"],"answer":1,"category":"Fibre","explanation":"A properly made fusion splice forms a continuous glass path with very low loss and reflectance.","review":false,"note":""},{"id":"install-036","sourceNumber":36,"question":"Which connector is widely recognized for its square push-pull/snap-in design in fibre-optic networks?","options":["ST connector","SC connector","BNC connector","F-type connector"],"answer":1,"category":"Fibre","explanation":"The SC is a square-bodied push-pull fibre connector; ST is round and bayonet-style.","review":false,"note":""},{"id":"install-037","sourceNumber":37,"question":"What must always be performed on a fibre connector end-face before patching or testing?","options":["Inspection with a fibre microscope and cleaning with approved lint-free materials as required","Sanding with high-grit sandpaper","Coating with conductive grease","Exposing it to direct sunlight"],"answer":0,"category":"Fibre","explanation":"Inspect-before-connect prevents contamination from damaging end-faces or introducing avoidable loss and reflectance.","review":false,"note":""},{"id":"install-038","sourceNumber":38,"question":"Which type of test verifies that physical copper pairs are connected to the correct pins at both ends?","options":["Attenuation test","Wiremap test","Return Loss test","Insertion Loss test"],"answer":1,"category":"Testing","explanation":"Wiremap testing detects opens, shorts, reversals, crossed pairs, split pairs, and pin-assignment errors.","review":false,"note":""},{"id":"install-039","sourceNumber":39,"question":"What term describes the reduction in signal strength as it travels down a cable pathway?","options":["Crosstalk","Attenuation (Insertion Loss)","Impedance","Propagation Delay"],"answer":1,"category":"Testing","explanation":"Insertion loss is the decrease in signal power between the input and output of a link.","review":false,"note":""},{"id":"install-040","sourceNumber":40,"question":"What test metric measures unwanted signal coupling from one pair to another within a copper cable?","options":["Return Loss","Near-End Crosstalk (NEXT)","Propagation Delay","Length verification"],"answer":1,"category":"Testing","explanation":"NEXT measures crosstalk observed at the same end of the cable where the disturbing signal is applied.","review":false,"note":""},{"id":"install-041","sourceNumber":41,"question":"An Optical Time-Domain Reflectometer (OTDR) is used primarily to:","options":["Measure voltage on a copper line","Map and measure faults, splices, events, and losses along a fibre-optic cable run","Verify the pinout of an RJ-45 jack","Generate a tone for tracing analogue voice paths"],"answer":1,"category":"Testing","explanation":"An OTDR launches light pulses and analyzes reflections and backscatter versus distance along the fibre.","review":false,"note":""},{"id":"install-042","sourceNumber":42,"question":"What is a Permanent Link test configuration?","options":["The installed horizontal cable and its fixed terminations, excluding user and equipment patch cords","All patch cords, equipment cords, and horizontal cables from switch to computer","Only the backbone fibre connecting separate buildings","Only the grounding-wire continuity"],"answer":0,"category":"Testing","explanation":"Permanent-link certification covers the fixed cabling from the patch-panel side to the work-area outlet, not the removable cords.","review":false,"note":""},{"id":"install-043","sourceNumber":43,"question":"What is a Channel test configuration?","options":["Testing only the patch panel","Testing the complete end-to-end cabling channel, including the horizontal link and patch/equipment cords","Testing the connection between a utility pole and the entrance facility","Testing wireless signal coverage"],"answer":1,"category":"Testing","explanation":"A channel test includes the fixed link plus the cords and connection hardware used by the end-to-end cabling channel.","review":false,"note":""},{"id":"install-044","sourceNumber":44,"question":"Why are formal documentation and labelling critical after a structured-cabling installation?","options":["They change the building-code classification","They allow efficient troubleshooting, maintenance, moves, additions, changes, and future administration","They eliminate the need for future testing","They are used to generate data-encryption keys"],"answer":1,"category":"Administration","explanation":"Accurate identifiers, records, and test results make the infrastructure manageable throughout its life.","review":false,"note":""},{"id":"install-045","sourceNumber":45,"question":"What is the purpose of the Telecommunications Bonding Backbone (TBB)?","options":["To distribute high-voltage AC power to network racks","To interconnect telecommunications bonding infrastructure and equalize potential between telecommunications spaces","To serve as an alternative high-speed fibre-data pathway","To bridge gaps between local-area networks"],"answer":1,"category":"Bonding","explanation":"The TBB links telecommunications bonding busbars so exposed conductive parts share an effective bonding path.","review":false,"note":""},{"id":"install-046","sourceNumber":46,"question":"What is the minimum commonly specified size for a Telecommunications Bonding Backbone (TBB) conductor?","options":["14 AWG","10 AWG","6 AWG or larger","1/0 AWG only"],"answer":2,"category":"Bonding","explanation":"TIA bonding guidance commonly sets 6 AWG copper as the minimum TBB size, with engineering calculations possibly requiring larger conductors.","review":true,"note":"Verify the current ANSI/TIA-607 edition and project design."},{"id":"install-047","sourceNumber":47,"question":"The TBB infrastructure is considered independent of:","options":["The building's walls","Specific telecommunications equipment or data cables","The main grounding busbar","National electrical standards"],"answer":1,"category":"Bonding","explanation":"The bonding infrastructure serves the space and building rather than being dedicated to one device or data cable.","review":false,"note":""},{"id":"install-048","sourceNumber":48,"question":"Where should telecommunications cabling be routed inside a building to improve shielding from external electromagnetic effects?","options":["Close to the exterior walls","Near the middle of the building and, where practical, near bonded structural steel","Directly alongside high-voltage panels","In outdoor open trenches"],"answer":1,"category":"EMI","explanation":"Interior routing and bonded building steel can reduce exposure to external electromagnetic fields.","review":true,"note":"Actual routing must also follow separation, pathway, fire, and structural requirements."},{"id":"install-049","sourceNumber":49,"question":"What risk is reduced by avoiding data-cable routes directly parallel and adjacent to electrical power cables?","options":["Physical moisture collection","Electromagnetic interference disrupting data signals","Physical theft of the data cables","Expansion caused by thermal variables"],"answer":1,"category":"EMI","explanation":"Separation and appropriate crossing angles reduce inductive and capacitive coupling from power circuits.","review":false,"note":""},{"id":"install-050","sourceNumber":50,"question":"What system should be integrated at the building entry point to protect internal cabling from external voltage surges?","options":["An isolation transformer","Approved entrance protection, bonding, and grounding for entering conductive lines","A media converter","A digital network bridge"],"answer":1,"category":"Bonding","explanation":"Conductive outside-plant communications circuits require suitable entrance protection and bonding in accordance with the applicable code and service-provider rules.","review":false,"note":""}]});
+
+window.CG_BANKS=window.CG_BANKS||[];window.CG_BANKS.push({"id":"cec","title":"CEC 2024 & Telecom Practice","shortTitle":"CEC & Telecom","description":"Networking, communications wiring, life safety, CEC sections, pathways, and field practice.","accent":"amber","questions":[{"id":"cec-001","sourceNumber":1,"question":"Which networking scope best describes a network that spans a large geographical area—such as a country or continent—and often uses leased telecommunications circuits to connect distant sites?","options":["Local Area Network (LAN)","Metropolitan Area Network (MAN)","Wide Area Network (WAN)","Personal Area Network (PAN)"],"answer":2,"category":"Networking","explanation":"A WAN interconnects networks over large geographic distances, often using carrier services.","review":false,"note":""},{"id":"cec-002","sourceNumber":2,"question":"Which type of network covers the smallest area listed, such as a single room or home?","options":["WAN","MAN","LAN"],"answer":2,"category":"Networking","explanation":"A LAN serves a localized area such as a home, office, or building.","review":false,"note":""},{"id":"cec-003","sourceNumber":3,"question":"What is the largest network in the world and the ultimate example of a WAN?","options":["The Internet","A school computer lab","A city cable-TV network"],"answer":0,"category":"Networking","explanation":"The Internet interconnects networks worldwide and is the largest practical WAN example.","review":false,"note":""},{"id":"cec-004","sourceNumber":4,"question":"Which topology connects all devices to one central hub or switch?","options":["Bus topology","Star topology","Ring topology"],"answer":1,"category":"Networking","explanation":"In a star topology each endpoint has its own link to a central connection device.","review":false,"note":""},{"id":"cec-005","sourceNumber":5,"question":"If you can see, touch, and trace the actual network cables, what are you looking at?","options":["Logical topology","Physical topology","Protocol topology"],"answer":1,"category":"Networking","explanation":"Physical topology describes the real devices, cable routes, and connection layout.","review":false,"note":""},{"id":"cec-006","sourceNumber":6,"question":"In which topology can a break in the main backbone cable bring down the entire network?","options":["Star topology","Bus topology","Mesh topology"],"answer":1,"category":"Networking","explanation":"A traditional bus depends on one shared backbone, so a break can disrupt the whole segment.","review":false,"note":""},{"id":"cec-007","sourceNumber":7,"question":"Which structured-cabling subsystem connects the building's main telecommunications space to telecommunications rooms on different floors?","options":["Horizontal cabling","Backbone (vertical) cabling","Work-area cabling","Patch-cord cabling"],"answer":1,"category":"Structured Cabling","explanation":"Backbone cabling interconnects entrance facilities, equipment rooms, and telecommunications rooms.","review":false,"note":""},{"id":"cec-008","sourceNumber":8,"question":"In a multi-level dwelling, where is smoke-alarm coverage generally required at minimum?","options":["On the top level only","On the main level only","On every storey, including basement levels where required","Only beside HVAC return-air grilles"],"answer":2,"category":"Life Safety","explanation":"Canadian building and fire requirements generally call for smoke-alarm coverage on every storey of a dwelling.","review":true,"note":"Placement is primarily governed by the adopted building/fire code and provincial amendments, not CEC Section 32 alone."},{"id":"cec-009","sourceNumber":9,"question":"On a storey containing sleeping rooms, where are smoke alarms generally required?","options":["Inside every closet","On the wall near the floor","In sleeping rooms and in the area serving the sleeping rooms, as required by the adopted building code","Only at the top of the stairs leading to that floor"],"answer":2,"category":"Life Safety","explanation":"Modern Canadian building-code requirements generally include alarms in sleeping rooms and in a location between sleeping rooms and the remainder of the storey.","review":true,"note":"Confirm the exact provincial building/fire-code wording and local adoption."},{"id":"cec-010","sourceNumber":10,"question":"What rack-mounted component contains rows of jacks used to terminate, organize, and reroute permanent network cables?","options":["Router","Patch panel","Network switch","Bridge"],"answer":1,"category":"Structured Cabling","explanation":"A patch panel provides a fixed termination field that can be interconnected to active equipment with patch cords.","review":false,"note":""},{"id":"cec-011","sourceNumber":11,"question":"Under ANSI/TIA structured-cabling rules, what is the maximum horizontal permanent-link length from the telecommunications room to the work-area outlet?","options":["10 metres","50 metres","90 metres","100 metres"],"answer":2,"category":"Standards","explanation":"The balanced-copper horizontal permanent link is limited to 90 m.","review":false,"note":""},{"id":"cec-012","sourceNumber":12,"question":"Which subsystem includes office-floor equipment such as computers, VoIP phones, and their equipment cords to the wall outlet?","options":["Entrance Facility","Backbone Cabling","Work Area","Equipment Room"],"answer":2,"category":"Structured Cabling","explanation":"The work area contains the telecommunications outlet, cords, adapters, and station equipment.","review":false,"note":""},{"id":"cec-013","sourceNumber":13,"question":"Which twisted-pair copper construction adds shielding to help protect signals in high-EMI areas?","options":["UTP (Unshielded Twisted Pair)","Shielded or screened twisted pair","Coaxial cable","Single-mode fibre"],"answer":1,"category":"Copper","explanation":"Shielded/screened balanced cable adds conductive screening that must be correctly bonded and terminated.","review":false,"note":""},{"id":"cec-014","sourceNumber":14,"question":"What is the maximum standard horizontal channel length, including the 90 m permanent link and patch/equipment cords?","options":["95 metres","100 metres","110 metres","120 metres"],"answer":1,"category":"Standards","explanation":"The standard channel limit is 100 m, normally comprising up to 90 m of fixed cable plus up to 10 m of cords.","review":false,"note":""},{"id":"cec-015","sourceNumber":15,"question":"How can a cable installer generally distinguish Category 3 from Category 5 cable construction?","options":["The jackets always use different colours","Every pair uses neon colours","Category 3 generally has fewer twists per unit length than Category 5","Category 5 has fewer twists per unit length than Category 3"],"answer":2,"category":"Copper","explanation":"Higher-performance balanced cable generally uses more controlled and often tighter pair twists, although the jacket marking is the reliable identification method.","review":true,"note":"Always identify category from the printed cable legend; twist appearance alone is not a certification method."},{"id":"cec-016","sourceNumber":16,"question":"Which tool seats individual copper conductors into insulation-displacement termination slots on a patch panel or wall jack?","options":["Crimping tool","Wire stripper","Punch-down tool","Cable tester"],"answer":2,"category":"Tools","explanation":"A punch-down tool inserts the conductor into the IDC and trims the tail when fitted with a cutting blade.","review":false,"note":""},{"id":"cec-017","sourceNumber":17,"question":"Which of the following is not a recognized generic type of twisted-pair copper cable?","options":["Shielded twisted pair","Screened twisted pair","Tech-shielded twisted pair","Unshielded twisted pair"],"answer":2,"category":"Copper","explanation":"“Tech-shielded twisted pair” is not a recognized generic construction name.","review":true,"note":"The source sheet appears to contain a typo in the 'screened twisted pair' choice."},{"id":"cec-018","sourceNumber":18,"question":"Which set correctly lists common telecommunications network scope categories?","options":["LAN, MAN, VAN","LAN, WANN, MAN","LAN, MAN, WAN","MAN, WAM, LAN"],"answer":2,"category":"Networking","explanation":"LAN, MAN, and WAN describe local, metropolitan, and wide-area networks.","review":false,"note":""},{"id":"cec-019","sourceNumber":19,"question":"Which physical topology is most commonly used for modern structured cabling?","options":["Ring","Star","Bus","Logical"],"answer":1,"category":"Networking","explanation":"Horizontal cabling is installed in a star from a telecommunications room to individual work areas.","review":false,"note":""},{"id":"cec-020","sourceNumber":20,"question":"Why should smoke alarms not be installed in the dead-air space at a wall/ceiling junction?","options":["High air currents will damage the sensor","Air stagnation can delay smoke from reaching the detector","Moisture always collects there and causes false alarms","An electrical box cannot be secured there"],"answer":1,"category":"Life Safety","explanation":"Air movement can be limited at the corner, delaying smoke entry into the sensing chamber.","review":false,"note":""},{"id":"cec-021","sourceNumber":21,"question":"Which component is used in a structured-cabling system?","options":["Fire-rated doors","High-voltage wiring","Patch panels","Fire-rated plywood"],"answer":2,"category":"Structured Cabling","explanation":"Patch panels are standard passive connection hardware used to terminate and administer cabling.","review":false,"note":""},{"id":"cec-022","sourceNumber":22,"question":"Which cable rating is required when communications cable is installed in a plenum used for environmental-air circulation?","options":["Riser-rated cable (CMR)","Plenum-rated cable (CMP)","Ordinary PVC-jacketed cable","Armoured outdoor cable"],"answer":1,"category":"Fire Ratings","explanation":"CMP cable is listed for use in environmental-air plenums because of its flame-spread and smoke characteristics.","review":true,"note":"Canadian product designations and local building-code requirements must also be checked."},{"id":"cec-023","sourceNumber":23,"question":"What is a major benefit of standards?","options":["Documentation never has to change","Unlimited design flexibility without constraints","Consistent design, installation, interoperability, and performance criteria","Mandatory use of a pre-existing proprietary method"],"answer":2,"category":"Standards","explanation":"Standards create common requirements so systems from multiple parties can be designed, tested, and maintained consistently.","review":false,"note":""},{"id":"cec-024","sourceNumber":24,"question":"What floor area is commonly used as the planning basis for one work area?","options":["10 square metres","60 square metres","45 square metres","100 square metres"],"answer":0,"category":"Design","explanation":"A common planning allowance is at least one work area per 10 m² of usable floor space.","review":false,"note":""},{"id":"cec-025","sourceNumber":25,"question":"For which legacy application was standard untwisted quad cable primarily used?","options":["Telephone service","High-speed data","Doorbells only","Modern Ethernet"],"answer":0,"category":"Legacy Cabling","explanation":"Untwisted quad was used for basic telephone circuits, but balanced twisted-pair cabling is preferred for new structured installations.","review":true,"note":"The wording on the source sheet is poor; untwisted quad is not recommended for new high-performance cabling."},{"id":"cec-026","sourceNumber":26,"question":"What are the cables running from the telecommunications room to work-area outlets called?","options":["Backbone cables","Cross-connects","Horizontal cables","Vertical pathways"],"answer":2,"category":"Structured Cabling","explanation":"Horizontal cabling links the horizontal cross-connect in the TR to work-area outlets.","review":false,"note":""},{"id":"cec-027","sourceNumber":27,"question":"What is the maximum combined length normally allowed for patch cords and jumpers in a 100 m horizontal channel?","options":["3 metres","10 metres","7 metres","6 metres"],"answer":1,"category":"Standards","explanation":"A standard 100 m channel allows up to 10 m total for work-area and telecommunications-room cords.","review":false,"note":""},{"id":"cec-028","sourceNumber":28,"question":"When telephone/communications cable is run parallel to branch-circuit wiring, what separation is commonly taught to reduce induction noise?","options":["900 mm","600 mm","150 mm","300 mm"],"answer":3,"category":"Separation","explanation":"A 300 mm separation is a common conservative training rule for parallel open runs, with closer spacing possible under specific pathway and shielding conditions.","review":true,"note":"Actual minimum separation depends on power level, pathway construction, barriers, standards, and the authority having jurisdiction."},{"id":"cec-029","sourceNumber":29,"question":"What characteristic impedance is standard for coaxial cable used for television distribution?","options":["85 ohms","50 ohms","100 ohms","75 ohms"],"answer":3,"category":"Coaxial","explanation":"CATV and television distribution systems use 75-ohm coaxial cable.","review":false,"note":""},{"id":"cec-030","sourceNumber":30,"question":"Where are carbon-monoxide alarms generally required in homes with fuel-burning appliances or attached garages?","options":["Only beside the main electrical panel","Inside a detached garage only","In or near sleeping areas as required by the adopted building/fire code","On the floor surface under beds"],"answer":2,"category":"Life Safety","explanation":"CO alarms are located so occupants can be warned while sleeping; exact locations are set by the adopted building/fire code.","review":false,"note":""},{"id":"cec-031","sourceNumber":31,"question":"Which conductor material is not acceptable for the cable-television grounding conductor described by CEC Section 54?","options":["Insulated copper","Copper not smaller than the required minimum","Solid or stranded aluminum","Solid or stranded copper"],"answer":2,"category":"CEC 2024","explanation":"The bonding/grounding conductor for this application is specified as copper; aluminum is not the intended material.","review":true,"note":"The source question is imprecise because the conductor may not necessarily be required to be insulated. Verify CEC Rule 54-300 and provincial amendments."},{"id":"cec-032","sourceNumber":32,"question":"Which Canadian Electrical Code section covers optical-fibre cables?","options":["Section 54","Section 60","Section 56","Section 16"],"answer":2,"category":"CEC 2024","explanation":"CEC Section 56 addresses optical-fibre cables.","review":false,"note":""},{"id":"cec-033","sourceNumber":33,"question":"Which Canadian Electrical Code section covers electrical communication systems?","options":["Section 60","Section 54","Section 56","Section 4"],"answer":0,"category":"CEC 2024","explanation":"CEC Section 60 addresses electrical communication systems.","review":false,"note":""},{"id":"cec-034","sourceNumber":34,"question":"Which of the following is a recognized pathway/cable-management method for a structured-cabling system?","options":["Tight tie wraps as the primary pathway","Dedicated routes","Unsupported wire straps","Conduit"],"answer":3,"category":"Pathways","explanation":"Conduit is a recognized pathway method used to route and protect communications cabling.","review":true,"note":"Dedicated routes can also be part of a cable-management strategy; the source question does not provide a uniquely strong distractor set."},{"id":"cec-035","sourceNumber":35,"question":"Which fire-extinguisher class is suitable for a fire involving energized electrical equipment?","options":["Class B","Class C","Class D","Class A"],"answer":1,"category":"Safety","explanation":"Class C identifies extinguishing agents suitable for energized electrical equipment; de-energize whenever safely possible.","review":false,"note":""},{"id":"cec-036","sourceNumber":36,"question":"Which Canadian Electrical Code section covers optical-fibre cables?","options":["Section 72","Section 60","Section 54","Section 56"],"answer":3,"category":"CEC 2024","explanation":"CEC Section 56 covers optical-fibre cables.","review":false,"note":""},{"id":"cec-037","sourceNumber":37,"question":"Which circuit source is generally used for a dwelling-unit smoke alarm so a loss of supply is noticeable?","options":["A dedicated circuit supplying nothing else","A circuit supplying lighting or a mix of lighting and general-use receptacles, where permitted","A dedicated kitchen-counter receptacle circuit","A bathroom-vanity branch circuit"],"answer":1,"category":"CEC 2024","explanation":"Supplying alarms from a normally used circuit makes a loss of power more likely to be noticed while avoiding inappropriate dedicated loads.","review":true,"note":"Confirm CEC 2024 Rule 32 requirements and provincial amendments before field use."},{"id":"cec-038","sourceNumber":38,"question":"What are the five ring colours in the 25-pair telecommunications colour code?","options":["White, red, black, yellow, blue","Blue, orange, green, brown, white","Blue, orange, green, brown, slate","White, red, black, yellow, violet"],"answer":2,"category":"Colour Code","explanation":"The ring colours are blue, orange, green, brown, and slate; the tip colours are white, red, black, yellow, and violet.","review":false,"note":""},{"id":"cec-039","sourceNumber":39,"question":"When multiple smoke alarms are installed within one dwelling unit, how must they generally behave when one detects smoke?","options":["They operate independently","They are interconnected so activation of one causes all required alarms to sound","They disconnect utility power to the home","They report directly to the municipality over a phone line"],"answer":1,"category":"Life Safety","explanation":"Interconnection ensures occupants throughout the dwelling receive the alarm signal.","review":false,"note":""},{"id":"cec-040","sourceNumber":40,"question":"Which MasterFormat division is used for telecommunications work?","options":["Division 25","Division 26","Division 27","Division 28"],"answer":2,"category":"Specifications","explanation":"MasterFormat Division 27 covers communications/telecommunications systems.","review":false,"note":""},{"id":"cec-041","sourceNumber":41,"question":"What is an amplifier probe and tone generator commonly used for?","options":["Locating kinked conductors by sight","Measuring radio interference","Cable identification and basic troubleshooting","Measuring alien crosstalk"],"answer":2,"category":"Tools","explanation":"A toner places a traceable signal on a conductor and the probe locates it at the far end or along a route.","review":false,"note":""},{"id":"cec-042","sourceNumber":42,"question":"Which low-cost tester is intended to identify opens, shorts, crossed pairs, and miswires at a communications outlet?","options":["VOM multimeter","Toner and wand","Certification scanner","Basic outlet/wiremap tester"],"answer":3,"category":"Testing","explanation":"A basic wiremap tester checks conductor continuity and pin-to-pin arrangement.","review":true,"note":"The source calls this an 'outlet tester'; 'wiremap tester' is the clearer industry term."},{"id":"cec-043","sourceNumber":43,"question":"What is the most common method for terminating twisted-pair conductors on patch panels and jacks?","options":["Twist locks","Lugs","Splice connectors","Insulation-displacement connectors"],"answer":3,"category":"Termination","explanation":"IDC contacts terminate insulated conductors without stripping each conductor individually.","review":false,"note":""},{"id":"cec-044","sourceNumber":44,"question":"Which pathway is a good choice for VDV cable installation where flexibility is required?","options":["Electrical metallic tubing","Flexible conduit","Four-conductor Teck cable","Rigid PVC conduit"],"answer":1,"category":"Pathways","explanation":"Flexible conduit can accommodate movement and difficult routing, subject to fill, bend, support, and listing requirements.","review":false,"note":""},{"id":"cec-045","sourceNumber":45,"question":"What does an attenuation/insertion-loss test measure?","options":["ANEXT only","Signal loss from one end of the link to the other","Cable length only","The ratio between NEXT and FEXT"],"answer":1,"category":"Testing","explanation":"Insertion loss quantifies how much signal power is lost through the link.","review":false,"note":""},{"id":"cec-046","sourceNumber":46,"question":"When Category 6 communications cable runs near 120 V conductors enclosed in grounded EMT, which statement is most accurate?","options":["A fixed 600 mm separation is always required","A fixed 150 mm separation is always required","A fixed 300 mm separation is always required","Grounded metallic raceway can substantially reduce the required separation, but the applicable table and installation conditions must be checked"],"answer":3,"category":"Separation","explanation":"A grounded metallic pathway provides shielding, so separation is determined by the applicable TIA/code table rather than a universal 600 mm rule.","review":true,"note":"This question was rewritten because the original choices implied an absolute rule without enough installation details."},{"id":"cec-047","sourceNumber":47,"question":"What is the minimum driven length commonly specified for a separate rod electrode used for a communications/television bonding application?","options":["3 m","2 m","1 m","0.75 m"],"answer":1,"category":"Bonding","explanation":"The course material appears to target a 2 m minimum for this communications electrode application.","review":true,"note":"Grounding-electrode requirements are jurisdiction- and application-specific. Verify CEC Section 10/54 and local amendments before installation."},{"id":"cec-048","sourceNumber":48,"question":"What is the minimum copper branch-circuit conductor size among these choices for a 120 V residential smoke-alarm circuit?","options":["18 AWG","16 AWG","14 AWG","12 AWG"],"answer":2,"category":"CEC 2024","explanation":"A typical 15 A dwelling branch circuit uses conductors not smaller than No. 14 AWG copper.","review":false,"note":""},{"id":"cec-049","sourceNumber":49,"question":"Under the course interpretation of the Canadian Electrical Code, may the dwelling smoke-alarm supply circuit be protected by a GFCI or AFCI?","options":["Yes; it is mandatory","No; the alarm supply is not to depend on GFCI/AFCI protection that can interrupt the life-safety circuit","Yes, but only with a combined AFCI/GFCI device","Only in Alberta"],"answer":1,"category":"CEC 2024","explanation":"The intended rule avoids an upstream protective device unnecessarily removing power from required life-safety alarms.","review":true,"note":"CEC adoption and provincial amendments can alter exact requirements; verify the locally adopted 2024 rules."},{"id":"cec-050","sourceNumber":50,"question":"What is the preferred first bonding point for a telecommunications bonding system?","options":["Steel studs","The gas line","The building service grounding-electrode/bonding system","A receptacle bond screw"],"answer":2,"category":"Bonding","explanation":"Telecommunications bonding is coordinated with the building's grounding-electrode and bonding system to avoid separate, unequal references.","review":false,"note":""},{"id":"cec-051","sourceNumber":51,"question":"Why are dwelling smoke alarms restricted from being supplied through a disconnect switch or nuisance-prone protective device?","options":["To minimize accidental power interruption to life-safety devices","To keep voltage drop below 5%","To lower the panelboard ampacity","To prevent Wi-Fi interference"],"answer":0,"category":"Life Safety","explanation":"Required alarms must remain continuously supplied; an avoidable switch or trip can defeat the warning system.","review":false,"note":""},{"id":"cec-052","sourceNumber":52,"question":"What is a main passive termination component in a telecommunications room?","options":["RJ45 hub","Punch-down block or patch panel termination field","LAN interface software","The room itself"],"answer":1,"category":"Structured Cabling","explanation":"IDC blocks and patch panels provide the fixed termination and cross-connect field in a TR.","review":false,"note":""},{"id":"cec-053","sourceNumber":53,"question":"Where does an outside service provider physically connect to and hand over control to a building's internal wiring?","options":["Work Area","Telecommunications Room only","Entrance Facility/demarcation point","Main Cross-Connect only"],"answer":2,"category":"Structured Cabling","explanation":"The entrance facility contains the transition and demarcation between outside service facilities and customer cabling.","review":false,"note":""},{"id":"cec-054","sourceNumber":54,"question":"When installing a smoke alarm on a flat ceiling, how close may it be placed to a sidewall?","options":["No closer than 100 mm (4 in)","No closer than 300 mm (12 in)","Directly in the corner","Exactly 50 mm (2 in) away"],"answer":0,"category":"Life Safety","explanation":"Ceiling-mounted smoke alarms are kept at least 100 mm from the wall to avoid the dead-air corner.","review":true,"note":"Follow the adopted building/fire code and the listed alarm manufacturer's instructions."},{"id":"cec-055","sourceNumber":55,"question":"When mounting a smoke alarm on a wall, where should the top edge of the alarm generally be below the ceiling?","options":["Between 0 and 50 mm","Between 100 and 300 mm","Between 500 and 1000 mm","Anywhere on the upper half of the wall"],"answer":1,"category":"Life Safety","explanation":"A common placement range is 100–300 mm below the ceiling, outside the dead-air corner.","review":true,"note":"Follow the adopted building/fire code and manufacturer instructions."},{"id":"cec-056","sourceNumber":56,"question":"Which listed application is a major use of coaxial cable?","options":["Broadband Internet/CATV distribution","Intercom control only","Underfloor branch-circuit wiring","Printer interconnections"],"answer":0,"category":"Coaxial","explanation":"75-ohm coaxial cable is widely used for cable television and cable-modem broadband.","review":false,"note":""},{"id":"cec-057","sourceNumber":57,"question":"Which environment should generally be avoided when placing a standard smoke alarm to prevent nuisance alarms or unreliable operation?","options":["Just outside a bedroom door","Inside an unheated garage or too close to a cooking appliance","At the top of a basement stairwell where required","In a living-room hallway"],"answer":1,"category":"Life Safety","explanation":"Temperature extremes, exhaust, dust, and cooking aerosols can cause nuisance alarms or impair normal operation.","review":false,"note":""},{"id":"cec-058","sourceNumber":58,"question":"What name is given to the cables that run between entrance facilities and telecommunications rooms/equipment rooms?","options":["Cables","Service conductors","Backbone cables","Media interface devices"],"answer":2,"category":"Structured Cabling","explanation":"Backbone cabling interconnects the entrance facility, equipment rooms, and telecommunications rooms.","review":false,"note":""},{"id":"cec-059","sourceNumber":59,"question":"What is the cabling subsystem that runs from a telecommunications room to individual work-area wall outlets?","options":["Horizontal cabling","Backbone cabling","Entrance facility","Equipment-room cabling"],"answer":0,"category":"Structured Cabling","explanation":"Horizontal cabling extends from the TR horizontal cross-connect to work-area outlets.","review":false,"note":""},{"id":"cec-060","sourceNumber":60,"question":"What is the maximum recommended length of a straight telecommunications conduit section between pull points?","options":["10 m","90 m","30 m","50 m"],"answer":2,"category":"Pathways","explanation":"TIA pathway guidance commonly limits a conduit run between pull points to about 30 m and no more than two 90-degree bends.","review":false,"note":""},{"id":"cec-061","sourceNumber":61,"question":"What maximum tray-fill ratio is commonly used when planning telecommunications cable tray capacity?","options":["75%","60%","50%","40%"],"answer":2,"category":"Pathways","explanation":"A 50% tray-fill planning limit leaves working space and future capacity.","review":true,"note":"Tray type, cable arrangement, fire loading, and the governing standard may change the calculation."},{"id":"cec-062","sourceNumber":62,"question":"What minimum clear vertical space is commonly recommended above suspended-ceiling tiles for horizontal cabling and pathways?","options":["75 mm","100 mm","150 mm","300 mm"],"answer":0,"category":"Pathways","explanation":"A minimum clear access space of about 75 mm is commonly cited for ceiling pathways.","review":true,"note":"Project specifications and TIA-569 design details should be checked."},{"id":"cec-063","sourceNumber":63,"question":"Which item should not be used to secure Category 5 and higher communications cable?","options":["Properly applied cable ties that do not deform the cable","Hook-and-loop fasteners","Staples driven over or through the cable","Listed cable guides or saddles"],"answer":2,"category":"Installation","explanation":"Staples can crush, kink, or penetrate balanced cable and damage its transmission performance.","review":false,"note":""}]});
+
+window.CG_BANKS=window.CG_BANKS||[];window.CG_BANKS.push({"id":"fundamentals","title":"Structured Cabling Fundamentals","shortTitle":"Fundamentals","description":"Subsystems, topology, standards, media, hardware, spaces, and scalable design.","accent":"lime","questions":[{"id":"fundamentals-001","sourceNumber":1,"question":"What is a structured or data-cabling system?","options":["Any combination of electrical wires used to power a building","A standards-compliant combination of cabling and associated hardware that provides a site's telecommunications infrastructure","A proprietary network setup for one brand of hardware","A system used only for satellite-TV distribution"],"answer":1,"category":"Fundamentals","explanation":"Structured cabling is a standardized, application-independent infrastructure of cable, connection hardware, pathways, and spaces.","review":false,"note":""},{"id":"fundamentals-002","sourceNumber":2,"question":"A structured-cabling system can support which explicitly listed media uses?","options":["Voice, data, and video","High-voltage power distribution","Industrial hydraulic control","Natural-gas monitoring only"],"answer":0,"category":"Fundamentals","explanation":"Structured cabling can carry multiple low-voltage communications applications, including voice, data, and video.","review":false,"note":""},{"id":"fundamentals-003","sourceNumber":3,"question":"Where does a structured-cabling system normally begin?","options":["At the user's desktop computer","At the point where the service provider terminates or hands off service","Inside the main server rack only","At the floor distribution terminal"],"answer":1,"category":"Entrance Facility","explanation":"The customer cabling system begins at the service-provider demarcation/entrance interface.","review":false,"note":""},{"id":"fundamentals-004","sourceNumber":4,"question":"What is the common term for the point where the service provider terminates its connection into the building?","options":["Point of distribution","Point of demarcation (demarc)","Work-area outlet","Horizontal cross-connect"],"answer":1,"category":"Entrance Facility","explanation":"The demarcation point separates service-provider responsibility from customer premises cabling.","review":false,"note":""},{"id":"fundamentals-005","sourceNumber":5,"question":"What does the acronym NID stand for in a structured-cabling system?","options":["Network Insulation Device","Network Interface Device","Node Identification Data","National Infrastructure Directory"],"answer":1,"category":"Entrance Facility","explanation":"A Network Interface Device provides the physical service interface/demarcation for certain carrier services.","review":false,"note":""},{"id":"fundamentals-006","sourceNumber":6,"question":"Cabling radiates from the demarcation through connection points and equipment, ending at:","options":["The main power grid","Work-area devices such as computers and phones","The roof antenna in every system","The ground rod"],"answer":1,"category":"Work Area","explanation":"The structured-cabling channel ultimately serves station equipment in the work area.","review":false,"note":""},{"id":"fundamentals-007","sourceNumber":7,"question":"The network configuration created by structured cabling within a localized building or campus is called a:","options":["Wide Area Network (WAN)","Metropolitan Area Network (MAN)","Local Area Network (LAN)","Personal Area Network (PAN)"],"answer":2,"category":"Networking","explanation":"A LAN connects devices within a limited site such as a building or campus.","review":false,"note":""},{"id":"fundamentals-008","sourceNumber":8,"question":"Which factor causes structured-cabling systems to have unique project characteristics?","options":["The function of the installation and the customer's requirements","The weather on installation day","The brand of the installer's hand tools","The installer's physical height"],"answer":0,"category":"Design","explanation":"Each system is shaped by applications, environment, capacity, growth, architecture, and customer requirements.","review":false,"note":""},{"id":"fundamentals-009","sourceNumber":9,"question":"Structured-cabling systems must adapt to the types of equipment the installation will support:","options":["Only on inspection day","In the present and the future","Only for legacy analogue equipment","Exclusively for wireless routing"],"answer":1,"category":"Design","explanation":"A standards-based design anticipates current applications and reasonable future changes.","review":false,"note":""},{"id":"fundamentals-010","sourceNumber":10,"question":"Which variation can affect a structured-cabling system's design and warranty requirements?","options":["The building's exterior paint colour","Cable and connection products and the warranties offered by manufacturers","The client's operating system","The office-furniture brand alone"],"answer":1,"category":"Design","explanation":"Component compatibility, channel performance, installation practices, and manufacturer warranty programs can shape the design.","review":false,"note":""},{"id":"fundamentals-011","sourceNumber":11,"question":"How many standard subsystems are commonly identified in a traditional TIA structured-cabling system?","options":["3","4","6","8"],"answer":2,"category":"Fundamentals","explanation":"The traditional model identifies six subsystems: entrance facility, equipment room, backbone, telecommunications room/enclosure, horizontal cabling, and work area.","review":false,"note":""},{"id":"fundamentals-012","sourceNumber":12,"question":"Which subsystem contains the components needed to connect building pathways to the outside service provider?","options":["Horizontal cabling","Entrance Facility (EF)","Work Area","Backbone cabling"],"answer":1,"category":"Entrance Facility","explanation":"The entrance facility contains service entrance pathways, protection, bonding, and demarcation interfaces.","review":false,"note":""},{"id":"fundamentals-013","sourceNumber":13,"question":"The Entrance Facility houses the transition between outside-plant cables and:","options":["Desktop computers","Cables approved for placement inside the building","The power-distribution panel","Wireless access points"],"answer":1,"category":"Entrance Facility","explanation":"Outside-plant cable is transitioned to listed inside-building cable or protected as required at the entrance.","review":false,"note":""},{"id":"fundamentals-014","sourceNumber":14,"question":"Which subsystem is the centralized space for telecommunications equipment serving an entire building or campus?","options":["Work Area","Telecommunications Room","Equipment Room","Horizontal Cabling"],"answer":2,"category":"Spaces","explanation":"An equipment room is an environmentally controlled centralized space for larger, complex, building- or campus-serving equipment.","review":false,"note":""},{"id":"fundamentals-015","sourceNumber":15,"question":"What is the main difference between an Equipment Room and a Telecommunications Room?","options":["Equipment rooms contain only patch panels, while TRs contain main servers","An equipment room usually houses larger and more complex building- or campus-wide equipment than a TR","TRs are always in basements","Equipment rooms never require cooling"],"answer":1,"category":"Spaces","explanation":"TRs primarily serve a floor or area; ERs support larger centralized equipment and cross-connect functions.","review":false,"note":""},{"id":"fundamentals-016","sourceNumber":16,"question":"Which subsystem interconnects telecommunications rooms, equipment rooms, and entrance facilities?","options":["Horizontal cabling","Backbone (vertical) cabling","Work-area cabling","Perimeter raceway cabling"],"answer":1,"category":"Backbone","explanation":"Backbone cabling links the major telecommunications spaces and hierarchical cross-connects.","review":false,"note":""},{"id":"fundamentals-017","sourceNumber":17,"question":"Backbone cabling is also frequently called:","options":["Workstation cabling","Drop cabling","Vertical cabling","Lateral cabling"],"answer":2,"category":"Backbone","explanation":"In multi-storey buildings, backbone cabling commonly runs vertically between floors, hence the informal term vertical cabling.","review":false,"note":""},{"id":"fundamentals-018","sourceNumber":18,"question":"Which component is not part of backbone cabling?","options":["Main cross-connects","Intermediate cross-connects","Mechanical terminations and patch cords used for backbone cross-connection","RJ-45 work-area outlets at individual desks"],"answer":3,"category":"Backbone","explanation":"Desk outlets belong to the horizontal/work-area subsystem, not the backbone.","review":false,"note":""},{"id":"fundamentals-019","sourceNumber":19,"question":"What is the primary function of the Horizontal Cabling subsystem?","options":["To connect the entrance facility directly to the service provider's central office","To extend from the work-area telecommunications outlet to the telecommunications room","To connect separate campus buildings","To run roof lines for satellite reception"],"answer":1,"category":"Horizontal Cabling","explanation":"Horizontal cabling connects work-area outlets to the horizontal cross-connect in the serving TR.","review":false,"note":""},{"id":"fundamentals-020","sourceNumber":20,"question":"Horizontal cabling includes which components?","options":["Telecommunications outlet/connector, horizontal media, and terminations/cross-connect hardware in the TR","Outside utility poles and underground service trenches","Server operating-system licences","Main building lightning rods"],"answer":0,"category":"Horizontal Cabling","explanation":"The subsystem includes the cable, outlet, consolidation point if used, and its fixed termination/cross-connect hardware.","review":false,"note":""},{"id":"fundamentals-021","sourceNumber":21,"question":"Which subsystem extends from the telecommunications outlet/connector to station equipment?","options":["Main cross-connect","Backbone cabling","Work Area","Entrance Facility"],"answer":2,"category":"Work Area","explanation":"The work area includes cords, adapters, and equipment between the outlet and the user device.","review":false,"note":""},{"id":"fundamentals-022","sourceNumber":22,"question":"Work-area components typically include patch cords, adapters, and:","options":["High-density backbone fibre enclosures","Station equipment such as computers, telephones, and printers","Main building grounding bars","HVAC units"],"answer":1,"category":"Work Area","explanation":"Station devices and their equipment cords are work-area components.","review":false,"note":""},{"id":"fundamentals-023","sourceNumber":23,"question":"What physical topology is specified for modern structured-cabling systems?","options":["Ring topology","Bus topology","Hierarchical star topology","Mesh topology"],"answer":2,"category":"Topology","explanation":"Structured cabling uses hierarchical star connections from cross-connects to subordinate spaces and work areas.","review":false,"note":""},{"id":"fundamentals-024","sourceNumber":24,"question":"In a hierarchical star topology, horizontal cabling radiates from a single:","options":["Main building entrance wall","Telecommunications Room (TR) or telecommunications enclosure","Individual desktop computer","Utility pole"],"answer":1,"category":"Topology","explanation":"Each horizontal cable runs from the serving TR/enclosure to one work-area outlet.","review":false,"note":""},{"id":"fundamentals-025","sourceNumber":25,"question":"What is the maximum permanent-link distance allowed for horizontal copper cabling?","options":["50 metres","90 metres","100 metres","150 metres"],"answer":1,"category":"Standards","explanation":"The fixed horizontal permanent link is limited to 90 m.","review":false,"note":""},{"id":"fundamentals-026","sourceNumber":26,"question":"What is the maximum total horizontal channel distance, including patch cords?","options":["90 metres","100 metres","110 metres","120 metres"],"answer":1,"category":"Standards","explanation":"The complete channel is limited to 100 m.","review":false,"note":""},{"id":"fundamentals-027","sourceNumber":27,"question":"What is the maximum combined length normally allowed for all patch cords in a horizontal channel?","options":["5 metres","10 metres","20 metres","15 metres"],"answer":1,"category":"Standards","explanation":"The typical 100 m channel model reserves a combined 10 m for equipment and patch cords.","review":false,"note":""},{"id":"fundamentals-028","sourceNumber":28,"question":"Why is a star topology preferred in structured cabling over a bus topology?","options":["It always uses much less cable","A failure in one horizontal cable run does not bring down the entire network","It requires no switches or hubs","It allows data to travel without signal loss"],"answer":1,"category":"Topology","explanation":"Each endpoint has a dedicated run, so one cable fault is isolated to that endpoint.","review":false,"note":""},{"id":"fundamentals-029","sourceNumber":29,"question":"What can happen if the 90 m horizontal permanent-link limit is exceeded?","options":["The cable immediately catches fire","Attenuation and propagation delay can cause performance failure or data errors","Packet size doubles automatically","The jacket changes physical properties"],"answer":1,"category":"Standards","explanation":"Longer cable increases insertion loss and delay and can push the link outside its certified performance limits.","review":false,"note":""},{"id":"fundamentals-030","sourceNumber":30,"question":"Which cross-connect represents the central hub of a hierarchical star topology in a multi-level building?","options":["Horizontal Cross-Connect (HC)","Intermediate Cross-Connect (IC)","Main Cross-Connect (MC)","Work-Area Outlet (WAO)"],"answer":2,"category":"Topology","explanation":"The main cross-connect is the top-level connection point in the hierarchical star.","review":false,"note":""},{"id":"fundamentals-031","sourceNumber":31,"question":"What are the two broad physical-media categories recognized for structured cabling?","options":["Aluminum and lead","Copper and optical fibre","Coaxial and twinaxial only","Wireless and infrared"],"answer":1,"category":"Media","explanation":"Structured cabling primarily uses balanced copper and optical-fibre media, with coaxial used for some applications.","review":false,"note":""},{"id":"fundamentals-032","sourceNumber":32,"question":"Which cable type is most commonly installed for horizontal data distribution because of cost and flexibility?","options":["Single-mode optical fibre","Unshielded twisted-pair copper cable","Shielded coaxial cable","Rigid armoured outdoor trunk cable"],"answer":1,"category":"Copper","explanation":"Four-pair UTP is economical, flexible, easy to terminate, and supports common Ethernet applications.","review":false,"note":""},{"id":"fundamentals-033","sourceNumber":33,"question":"What characteristic of twisted-pair cable helps reject electromagnetic interference?","options":["Plastic insulation thickness alone","Twisting the conductors of each pair at controlled intervals","Outer-jacket colour","Overall cable length"],"answer":1,"category":"Copper","explanation":"Twisting makes induced noise affect both conductors similarly so the balanced receiver can reject it.","review":false,"note":""},{"id":"fundamentals-034","sourceNumber":34,"question":"Which category of twisted-pair cable is the minimum commonly specified to support 10 Gigabit Ethernet for a full 100 m channel?","options":["Category 5e","Category 6","Category 6A","Category 3"],"answer":2,"category":"Copper","explanation":"Category 6A is specified for 10GBASE-T to 100 m; Category 6 support is distance-limited.","review":false,"note":""},{"id":"fundamentals-035","sourceNumber":35,"question":"Which fibre type is designed for short-to-medium distances and is commonly used within a building backbone?","options":["Single-mode fibre","Multimode fibre","Coaxial optical fibre","Quad-shielded fibre"],"answer":1,"category":"Fibre","explanation":"Multimode fibre is widely used for shorter premises backbones and data-centre links.","review":false,"note":""},{"id":"fundamentals-036","sourceNumber":36,"question":"Single-mode optical fibre is ideally suited for which backbone application?","options":["Short runs under 10 m in a closet","Long-distance, high-bandwidth, and inter-building campus backbones","Analogue voice lines to old telephones","Desktop patch connections"],"answer":1,"category":"Fibre","explanation":"Single-mode fibre supports very long distances and high bandwidth with low attenuation and dispersion.","review":false,"note":""},{"id":"fundamentals-037","sourceNumber":37,"question":"What core advantage does optical fibre have over copper cabling?","options":["It supplies high-voltage power to end devices","It is immune to electromagnetic interference and can span much longer distances","It is terminated with ordinary hand pliers","It is always cheaper per foot to install"],"answer":1,"category":"Fibre","explanation":"Fibre carries light rather than electrical current, so it is immune to EMI and supports long links.","review":false,"note":""},{"id":"fundamentals-038","sourceNumber":38,"question":"Which organization publishes the North American commercial-building telecommunications cabling standards?","options":["IEEE","Telecommunications Industry Association (TIA)","ISO alone","OSHA"],"answer":1,"category":"Standards","explanation":"TIA develops the ANSI/TIA premises-cabling standards used throughout North America.","review":false,"note":""},{"id":"fundamentals-039","sourceNumber":39,"question":"Which foundational standard series governs commercial-building telecommunications cabling?","options":["IEEE 802.11","ANSI/TIA-568","NFPA 70","ISO 9001"],"answer":1,"category":"Standards","explanation":"ANSI/TIA-568 is the core commercial premises-cabling series; related standards address pathways, administration, and bonding.","review":true,"note":"Grounding and pathways are specifically addressed by TIA-607 and TIA-569."},{"id":"fundamentals-040","sourceNumber":40,"question":"Why are structured-cabling standards critical to the industry?","options":["They mandate a brand of tools","They promote multi-vendor interoperability and consistent system performance","They set retail prices for patch panels","They limit annual installations"],"answer":1,"category":"Standards","explanation":"Common interfaces, performance limits, and test methods let compliant products and systems work together predictably.","review":false,"note":""},{"id":"fundamentals-041","sourceNumber":41,"question":"Which standard specifically addresses telecommunications pathways and spaces?","options":["ANSI/TIA-568","ANSI/TIA-569","ANSI/TIA-606","ANSI/TIA-607"],"answer":1,"category":"Standards","explanation":"ANSI/TIA-569 covers pathways and spaces for telecommunications infrastructure.","review":false,"note":""},{"id":"fundamentals-042","sourceNumber":42,"question":"What aspect of structured cabling is governed by ANSI/TIA-606?","options":["Grounding and bonding","Cable performance limits","Administration, labelling, and documentation","Firestop testing"],"answer":2,"category":"Standards","explanation":"TIA-606 defines administration and identification practices for telecommunications infrastructure.","review":false,"note":""},{"id":"fundamentals-043","sourceNumber":43,"question":"Which standard addresses telecommunications grounding and bonding for commercial buildings?","options":["ANSI/TIA-568","ANSI/TIA-569","ANSI/TIA-607","IEEE 802.3"],"answer":2,"category":"Standards","explanation":"ANSI/TIA-607 addresses telecommunications bonding and grounding infrastructure.","review":false,"note":""},{"id":"fundamentals-044","sourceNumber":44,"question":"What is a patch panel used for in a Telecommunications Room?","options":["To convert AC power to DC","To provide a centralized passive termination and administration field for cable links","To store server login codes","To increase switch processing speed"],"answer":1,"category":"Hardware","explanation":"Patch panels terminate permanent cabling and allow flexible cross-connection to active equipment.","review":false,"note":""},{"id":"fundamentals-045","sourceNumber":45,"question":"What connection method typically terminates a horizontal field cable on the rear of a patch panel?","options":["RJ-45 male plug crimp","Insulation-displacement connector punch-down","Screw terminal","Solder joint"],"answer":1,"category":"Termination","explanation":"Horizontal conductors are normally seated in IDC contacts on the rear of the patch panel.","review":false,"note":""},{"id":"fundamentals-046","sourceNumber":46,"question":"Why must a telecommunications room include adequate clearance around equipment racks?","options":["For water-pipe installation","For safe maintenance, troubleshooting, and access","For storage of heavy building materials","For office seating"],"answer":1,"category":"Spaces","explanation":"Working clearance allows safe installation, administration, cooling, maintenance, and emergency access.","review":false,"note":""},{"id":"fundamentals-047","sourceNumber":47,"question":"What is the purpose of a service loop or slack in a structured-cabling installation?","options":["To increase resistance","To provide extra cable for future re-termination, moves, additions, or changes","To bundle cables as tightly as possible","To slow data movement"],"answer":1,"category":"Installation","explanation":"Managed slack prevents a minor relocation or damaged termination from forcing replacement of the entire run.","review":false,"note":""},{"id":"fundamentals-048","sourceNumber":48,"question":"In the work area, how are horizontal cables cleanly presented to the end user?","options":["Hanging loosely from ceiling tiles","Terminated behind a faceplate in a wall- or furniture-mounted telecommunications outlet","Spliced directly into the computer chassis","Wrapped around desk legs"],"answer":1,"category":"Work Area","explanation":"The permanent horizontal cable terminates on an outlet connector protected by a faceplate or furniture fitting.","review":false,"note":""},{"id":"fundamentals-049","sourceNumber":49,"question":"What design strategy allows a structured-cabling system to adapt to major technology changes over time?","options":["Using proprietary configurations unique to one manufacturer","Using a modular, standards-compliant framework","Eliminating patch panels","Routing all cables under concrete without pathways"],"answer":1,"category":"Design","explanation":"Modular, standards-based components can be reconfigured and upgraded without rebuilding the entire infrastructure.","review":false,"note":""},{"id":"fundamentals-050","sourceNumber":50,"question":"When analyzing customer requirements for a new network deployment, what should structured-cabling design prioritize?","options":["The brightest cable-jacket colour","Growth, bandwidth demand, application changes, and future equipment upgrades","Parallel routing beside high-voltage lines to save space","Non-standard terminations that restrict modifications"],"answer":1,"category":"Design","explanation":"Good design reserves capacity and pathways for foreseeable growth, technology changes, and equipment replacement.","review":false,"note":""}]});
+
+  </script>
+  <script>
+(() => {
+  'use strict';
+
+  const BANKS = Array.isArray(window.CG_BANKS) ? window.CG_BANKS : [];
+  const app = document.getElementById('app');
+  const toastStack = document.getElementById('toastStack');
+  const soundButton = document.getElementById('soundButton');
+  const themeButton = document.getElementById('themeButton');
+  const homeButton = document.getElementById('homeButton');
+  const networkStatus = document.getElementById('networkStatus');
+  const installButton = document.getElementById('installButton');
+
+  const STORAGE_KEY = 'circuit-grind-v1';
+  const THEMES = ['neon', 'blueprint', 'ember'];
+  const MODE_INFO = {
+    hardcore: { name: 'Hardcore', icon: '↺', description: 'One wrong answer resets the run to Question 1 and reshuffles everything.' },
+    practice: { name: 'Practice', icon: '∞', description: 'Immediate feedback and explanations. Wrong answers do not reset the run.' },
+    survival: { name: 'Three Lives', icon: '♥', description: 'Start with three lives. Lose one on every miss.' },
+    speedrun: { name: 'Speedrun', icon: '⏱', description: 'Score as many correct answers as possible in two minutes.' }
+  };
+
+  const ACHIEVEMENTS = [
+    { id: 'first', icon: 'ϟ', name: 'First Spark', description: 'Answer one question correctly.' },
+    { id: 'streak5', icon: '5', name: 'Live Circuit', description: 'Build a five-answer streak.' },
+    { id: 'streak10', icon: '10', name: 'No-Trip Run', description: 'Build a ten-answer streak.' },
+    { id: 'century', icon: '100', name: 'Panel Veteran', description: 'Answer 100 questions correctly.' },
+    { id: 'daily', icon: 'D', name: 'Daily Inspection', description: 'Complete a Daily 10.' },
+    { id: 'perfect', icon: '★', name: 'Clean Certification', description: 'Finish a set without a wrong answer.' },
+    { id: 'hardcore', icon: '☠', name: 'No Breaker Trip', description: 'Complete a Hardcore run.' },
+    { id: 'allbanks', icon: '163', name: 'Full Commissioning', description: 'Answer every question in an all-bank run.' }
+  ];
+
+  const PRAISE = [
+    'Clean termination.', 'Signal is solid.', 'No fault detected.', 'That circuit holds.',
+    'Certified move.', 'Rack it and label it.', 'Zero crosstalk energy.', 'Inspector-approved brainwave.'
+  ];
+  const FAILS = [
+    'Breaker tripped.', 'That pair got crossed.', 'Certification failed.', 'Back to the panel.',
+    'Signal lost.', 'Wrong conductor.', 'The inspector found it.', 'That run needs rework.'
+  ];
+  const RANKS = ['Apprentice', 'Cable Puller', 'Terminator', 'Field Technician', 'Lead Installer', 'Commissioning Tech', 'Systems Specialist', 'Code Grinder'];
+
+  const defaults = {
+    xp: 0,
+    totalAnswered: 0,
+    totalCorrect: 0,
+    bestStreak: 0,
+    hardcoreBest: 0,
+    completions: 0,
+    achievements: [],
+    theme: 'neon',
+    sound: true,
+    dailyDate: '',
+    dailyScore: 0,
+    lastMode: 'hardcore',
+    selectedBanks: BANKS.map(bank => bank.id),
+    selectedCategory: 'all'
+  };
+
+  let profile = loadProfile();
+  let state = {
+    screen: 'home',
+    mode: profile.lastMode || 'hardcore',
+    selectedBanks: new Set((Array.isArray(profile.selectedBanks) ? profile.selectedBanks : []).filter(id => BANKS.some(bank => bank.id === id))),
+    selectedCategory: profile.selectedCategory || 'all',
+    session: null,
+    installPrompt: null
+  };
+  if (!state.selectedBanks.size) BANKS.forEach(bank => state.selectedBanks.add(bank.id));
+
+  let audioContext = null;
+  let timerHandle = null;
+
+  function loadProfile() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      return { ...defaults, ...parsed, achievements: Array.isArray(parsed.achievements) ? parsed.achievements : [] };
+    } catch {
+      return { ...defaults };
+    }
+  }
+
+  function saveProfile() {
+    profile.lastMode = state.mode;
+    profile.selectedBanks = [...state.selectedBanks];
+    profile.selectedCategory = state.selectedCategory;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function shuffle(items, random = Math.random) {
+    const copy = [...items];
+    for (let i = copy.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+
+  function hashString(text) {
+    let hash = 2166136261;
+    for (let i = 0; i < text.length; i += 1) {
+      hash ^= text.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return hash >>> 0;
+  }
+
+  function seededRandom(seed) {
+    let value = seed >>> 0;
+    return () => {
+      value += 0x6D2B79F5;
+      let t = value;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function todayKey() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  }
+
+  function allQuestions() {
+    return BANKS.flatMap(bank => bank.questions.map(question => ({ ...question, bankId: bank.id, bankTitle: bank.title })));
+  }
+
+  function selectedPool() {
+    return BANKS
+      .filter(bank => state.selectedBanks.has(bank.id))
+      .flatMap(bank => bank.questions.map(question => ({ ...question, bankId: bank.id, bankTitle: bank.title })))
+      .filter(question => state.selectedCategory === 'all' || question.category === state.selectedCategory);
+  }
+
+  function availableCategories() {
+    return [...new Set(BANKS.filter(bank => state.selectedBanks.has(bank.id)).flatMap(bank => bank.questions.map(q => q.category)))].sort();
+  }
+
+  function rankInfo() {
+    const level = Math.floor(profile.xp / 500);
+    const rankIndex = Math.min(RANKS.length - 1, Math.floor(level / 2));
+    const currentFloor = level * 500;
+    const nextFloor = (level + 1) * 500;
+    return {
+      level: level + 1,
+      name: RANKS[rankIndex],
+      progress: Math.max(0, Math.min(100, ((profile.xp - currentFloor) / (nextFloor - currentFloor)) * 100)),
+      remaining: nextFloor - profile.xp
+    };
+  }
+
+  function accuracy() {
+    return profile.totalAnswered ? Math.round((profile.totalCorrect / profile.totalAnswered) * 100) : 0;
+  }
+
+  function playTone(kind) {
+    if (!profile.sound) return;
+    try {
+      audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      const now = audioContext.currentTime;
+      oscillator.type = kind === 'correct' ? 'sine' : 'square';
+      oscillator.frequency.setValueAtTime(kind === 'correct' ? 520 : 180, now);
+      if (kind === 'correct') oscillator.frequency.exponentialRampToValueAtTime(760, now + 0.12);
+      else oscillator.frequency.exponentialRampToValueAtTime(110, now + 0.16);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.075, now + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.19);
+      oscillator.connect(gain).connect(audioContext.destination);
+      oscillator.start(now);
+      oscillator.stop(now + 0.21);
+    } catch {
+      profile.sound = false;
+      saveProfile();
+    }
+  }
+
+  function toast(title, message, bonus = false) {
+    const item = document.createElement('div');
+    item.className = `toast${bonus ? ' bonus' : ''}`;
+    item.innerHTML = `<strong>${escapeHtml(title)}</strong><span>${escapeHtml(message)}</span>`;
+    toastStack.appendChild(item);
+    window.setTimeout(() => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(8px)';
+      window.setTimeout(() => item.remove(), 220);
+    }, 3200);
+  }
+
+  function unlock(id) {
+    if (profile.achievements.includes(id)) return;
+    const achievement = ACHIEVEMENTS.find(item => item.id === id);
+    if (!achievement) return;
+    profile.achievements.push(id);
+    profile.xp += 75;
+    saveProfile();
+    toast(`Achievement: ${achievement.name}`, `${achievement.description} +75 XP`, true);
+  }
+
+  function checkAchievements(session = state.session) {
+    if (profile.totalCorrect >= 1) unlock('first');
+    if (profile.bestStreak >= 5) unlock('streak5');
+    if (profile.bestStreak >= 10) unlock('streak10');
+    if (profile.totalCorrect >= 100) unlock('century');
+    if (!session) return;
+    if (session.completed && session.wrong === 0) unlock('perfect');
+    if (session.completed && session.mode === 'hardcore') unlock('hardcore');
+    if (session.completed && session.mode === 'daily') unlock('daily');
+    if (session.completed && session.originalPoolSize === 163) unlock('allbanks');
+  }
+
+  function renderHome() {
+    clearTimer();
+    state.screen = 'home';
+    state.session = null;
+    const rank = rankInfo();
+    const categories = availableCategories();
+    if (state.selectedCategory !== 'all' && !categories.includes(state.selectedCategory)) state.selectedCategory = 'all';
+    const poolCount = selectedPool().length;
+    const dailyDone = profile.dailyDate === todayKey();
+
+    app.innerHTML = `
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">163 questions · CEC 2024 course edition</p>
+          <h1>Study until the <span>breaker trips.</span></h1>
+          <p>Pick a bank, choose how brutal the run should be, and grind through cabling, testing, life-safety, and telecommunications questions. Handwritten selections from the source sheets were ignored.</p>
+          <div class="hero-actions">
+            <button class="primary-button" type="button" data-action="start">Start ${escapeHtml(MODE_INFO[state.mode].name)}</button>
+            <button class="secondary-button" type="button" data-action="daily">${dailyDone ? 'Replay' : 'Start'} Daily 10</button>
+          </div>
+        </div>
+        <aside class="rank-card" aria-label="Player rank">
+          <div>
+            <div class="rank-top"><div><p class="eyebrow">Current rank</p><h2>${escapeHtml(rank.name)}</h2><p>${profile.xp.toLocaleString()} total XP</p></div><div class="rank-level">${rank.level}</div></div>
+            <div class="xp-track"><div class="xp-fill" style="width:${rank.progress}%"></div></div>
+            <div class="rank-meta"><span>Level ${rank.level}</span><span>${rank.remaining} XP to level ${rank.level + 1}</span></div>
+          </div>
+          <div class="stat-grid" style="margin-top:24px">
+            <div class="stat-tile"><strong>${accuracy()}%</strong><span>Lifetime accuracy</span></div>
+            <div class="stat-tile"><strong>${profile.bestStreak}</strong><span>Best streak</span></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="dashboard-grid">
+        <div class="main-stack">
+          <section class="panel">
+            <div class="panel-heading"><div><p class="eyebrow">Operating mode</p><h2>Choose the failure policy</h2><p>Hardcore follows your original reset-to-Question-1 rule.</p></div><span class="count-badge">${escapeHtml(MODE_INFO[state.mode].name)}</span></div>
+            <div class="mode-grid">
+              ${Object.entries(MODE_INFO).map(([id, mode]) => `
+                <label class="mode-card ${state.mode === id ? 'selected' : ''}">
+                  <input type="radio" name="mode" value="${id}" ${state.mode === id ? 'checked' : ''} />
+                  <span class="mode-icon">${mode.icon}</span>
+                  <strong>${escapeHtml(mode.name)}</strong>
+                  <small>${escapeHtml(mode.description)}</small>
+                </label>`).join('')}
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading"><div><p class="eyebrow">Question banks</p><h2>Select the work package</h2><p>Use one bank, combine them, or filter by topic.</p></div><span class="count-badge">${poolCount} ready</span></div>
+            <div class="bank-list">
+              ${BANKS.map(bank => `
+                <label class="bank-card">
+                  <input type="checkbox" value="${bank.id}" ${state.selectedBanks.has(bank.id) ? 'checked' : ''} />
+                  <span><strong>${escapeHtml(bank.title)}</strong><small>${escapeHtml(bank.description)}</small></span>
+                  <span class="bank-count">${bank.questions.length}</span>
+                </label>`).join('')}
+            </div>
+            <div class="filter-row">
+              <label class="select-label">Topic filter
+                <select id="categorySelect">
+                  <option value="all">All selected topics</option>
+                  ${categories.map(category => `<option value="${escapeHtml(category)}" ${state.selectedCategory === category ? 'selected' : ''}>${escapeHtml(category)}</option>`).join('')}
+                </select>
+              </label>
+              <button class="secondary-button" type="button" data-action="toggle-all">${state.selectedBanks.size === BANKS.length ? 'Clear banks' : 'Select all banks'}</button>
+            </div>
+          </section>
+        </div>
+
+        <aside class="side-stack">
+          <section class="panel daily-card">
+            <p class="eyebrow">Daily inspection</p>
+            <h2 style="margin:0">Daily 10</h2>
+            <p style="color:var(--muted)">A deterministic ten-question mix. The set changes with the date.</p>
+            <p><strong>${dailyDone ? `${profile.dailyScore}/10 completed today` : 'Not completed today'}</strong></p>
+            <button class="secondary-button" type="button" data-action="daily">Run Daily 10</button>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading"><div><p class="eyebrow">Lifetime stats</p><h2>Scoreboard</h2></div></div>
+            <div class="stat-grid">
+              <div class="stat-tile"><strong>${profile.totalCorrect}</strong><span>Correct</span></div>
+              <div class="stat-tile"><strong>${profile.totalAnswered}</strong><span>Answered</span></div>
+              <div class="stat-tile"><strong>${profile.hardcoreBest}</strong><span>Hardcore best</span></div>
+              <div class="stat-tile"><strong>${profile.completions}</strong><span>Completed runs</span></div>
+            </div>
+            <div style="display:grid;gap:7px;margin-top:14px">
+              <button class="secondary-button" type="button" data-action="export">Export progress</button>
+              <button class="text-button" type="button" data-action="reset-stats">Reset local stats</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading"><div><p class="eyebrow">Achievements</p><h2>${profile.achievements.length}/${ACHIEVEMENTS.length} unlocked</h2></div></div>
+            <div class="achievement-list">
+              ${ACHIEVEMENTS.map(item => `
+                <div class="achievement ${profile.achievements.includes(item.id) ? 'unlocked' : ''}">
+                  <span class="achievement-icon">${item.icon}</span>
+                  <span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.description)}</small></span>
+                </div>`).join('')}
+            </div>
+          </section>
+
+          <div class="start-panel">
+            <div class="start-summary"><span>Selected run</span><strong>${poolCount} questions</strong></div>
+            <button class="primary-button" type="button" data-action="start" ${poolCount ? '' : 'disabled'}>Energize ${escapeHtml(MODE_INFO[state.mode].name)}</button>
+          </div>
+        </aside>
+      </section>`;
+
+    bindHomeEvents();
+    app.focus({ preventScroll: true });
+    saveProfile();
+  }
+
+  function bindHomeEvents() {
+    app.querySelectorAll('input[name="mode"]').forEach(input => {
+      input.addEventListener('change', event => {
+        state.mode = event.target.value;
+        saveProfile();
+        renderHome();
+      });
+    });
+    app.querySelectorAll('.bank-card input').forEach(input => {
+      input.addEventListener('change', event => {
+        if (event.target.checked) state.selectedBanks.add(event.target.value);
+        else state.selectedBanks.delete(event.target.value);
+        saveProfile();
+        renderHome();
+      });
+    });
+    document.getElementById('categorySelect')?.addEventListener('change', event => {
+      state.selectedCategory = event.target.value;
+      saveProfile();
+      renderHome();
+    });
+    app.querySelectorAll('[data-action]').forEach(button => button.addEventListener('click', handleHomeAction));
+  }
+
+  function handleHomeAction(event) {
+    const action = event.currentTarget.dataset.action;
+    if (action === 'start') startSession(state.mode);
+    if (action === 'daily') startSession('daily');
+    if (action === 'toggle-all') {
+      if (state.selectedBanks.size === BANKS.length) state.selectedBanks.clear();
+      else BANKS.forEach(bank => state.selectedBanks.add(bank.id));
+      saveProfile();
+      renderHome();
+    }
+    if (action === 'export') exportProgress();
+    if (action === 'reset-stats') resetStats();
+  }
+
+  function startSession(mode) {
+    const basePool = mode === 'daily' ? allQuestions() : selectedPool();
+    if (!basePool.length) {
+      toast('No questions selected', 'Select at least one question bank or change the topic filter.');
+      return;
+    }
+    const date = todayKey();
+    const random = mode === 'daily' ? seededRandom(hashString(`circuit-grind-${date}`)) : Math.random;
+    const questions = mode === 'daily' ? shuffle(basePool, random).slice(0, 10) : shuffle(basePool, random);
+    state.screen = 'quiz';
+    state.session = {
+      mode,
+      questions,
+      originalPool: [...basePool],
+      originalPoolSize: basePool.length,
+      index: 0,
+      score: 0,
+      correct: 0,
+      wrong: 0,
+      streak: 0,
+      bestStreak: 0,
+      lives: mode === 'survival' ? 3 : null,
+      resets: 0,
+      locked: false,
+      feedback: null,
+      displayOptions: [],
+      startedAt: Date.now(),
+      endsAt: mode === 'speedrun' ? Date.now() + 120000 : null,
+      timeLeft: mode === 'speedrun' ? 120 : null,
+      completed: false
+    };
+    prepareQuestion();
+    if (mode === 'speedrun') startTimer();
+    renderQuiz();
+  }
+
+  function prepareQuestion() {
+    const session = state.session;
+    const question = session.questions[session.index];
+    session.locked = false;
+    session.feedback = null;
+    session.displayOptions = shuffle(question.options.map((text, originalIndex) => ({ text, originalIndex })));
+  }
+
+  function currentQuestion() { return state.session?.questions[state.session.index]; }
+
+  function isBossQuestion() {
+    const session = state.session;
+    return session && (session.index + 1) % 10 === 0;
+  }
+
+  function modeName(mode) { return mode === 'daily' ? 'Daily 10' : MODE_INFO[mode]?.name || mode; }
+
+  function renderQuiz() {
+    const session = state.session;
+    if (!session) return renderHome();
+    const question = currentQuestion();
+    if (!question) return finishSession('complete');
+    const progress = session.mode === 'speedrun'
+      ? Math.min(100, (session.index / Math.max(1, session.questions.length)) * 100)
+      : ((session.index + 1) / session.questions.length) * 100;
+    const boss = isBossQuestion();
+    const timeText = session.mode === 'speedrun' ? formatTime(session.timeLeft) : null;
+
+    app.innerHTML = `
+      <section class="quiz-layout">
+        <div class="quiz-hud">
+          <div class="hud-group">
+            <button class="secondary-button" type="button" id="quitButton">← Exit</button>
+            <span class="mode-badge">${escapeHtml(modeName(session.mode))}</span>
+          </div>
+          <div class="quiz-progress">
+            <div class="quiz-progress-label"><span>${session.mode === 'speedrun' ? 'Question stream' : `Question ${session.index + 1} of ${session.questions.length}`}</span><span>${Math.round(progress)}%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:${progress}%"></div></div>
+            ${session.mode === 'speedrun' ? `<div class="timer-track" style="margin-top:7px"><div class="timer-fill" id="timerFill" style="width:${Math.max(0, session.timeLeft / 120 * 100)}%"></div></div>` : ''}
+          </div>
+          <div class="hud-group">
+            ${session.mode === 'survival' ? `<div class="hud-metric"><strong>${'♥'.repeat(session.lives)}${'♡'.repeat(3-session.lives)}</strong><span>Lives</span></div>` : ''}
+            ${session.mode === 'speedrun' ? `<div class="hud-metric"><strong id="timerText">${timeText}</strong><span>Time</span></div>` : ''}
+            <div class="hud-metric"><strong>${session.score}</strong><span>Score</span></div>
+            <div class="hud-metric"><strong>${session.streak}</strong><span>Streak</span></div>
+          </div>
+        </div>
+
+        <article class="quiz-card ${boss ? 'boss' : ''}">
+          <div class="question-meta">
+            <span class="category-chip">${escapeHtml(question.category)}</span>
+            <span class="category-chip">${escapeHtml(question.bankTitle)}</span>
+            ${question.review ? '<span class="review-badge">Review flag</span>' : ''}
+            ${boss ? '<span class="boss-badge">Boss question · 2× XP</span>' : ''}
+            <span class="question-number">Source Q${question.sourceNumber}</span>
+          </div>
+          <h1 class="question-title">${escapeHtml(question.question)}</h1>
+          ${question.review ? `<p class="question-note">This item has wording, jurisdiction, or standards-edition limits. The explanation identifies the issue.</p>` : ''}
+          <div class="option-list" role="group" aria-label="Answer choices">
+            ${session.displayOptions.map((option, displayIndex) => {
+              const classes = ['option-button'];
+              if (session.locked && option.originalIndex === question.answer) classes.push('correct');
+              if (session.locked && session.feedback?.selectedOriginal === option.originalIndex && option.originalIndex !== question.answer) classes.push('wrong');
+              return `<button class="${classes.join(' ')}" type="button" data-option="${displayIndex}" ${session.locked ? 'disabled' : ''}>
+                <span class="option-key">${String.fromCharCode(65 + displayIndex)}</span>
+                <span>${escapeHtml(option.text)}</span>
+              </button>`;
+            }).join('')}
+          </div>
+          ${renderFeedback()}
+        </article>
+      </section>`;
+
+    app.querySelectorAll('[data-option]').forEach(button => button.addEventListener('click', () => answerQuestion(Number(button.dataset.option))));
+    document.getElementById('quitButton')?.addEventListener('click', confirmExit);
+    document.getElementById('nextButton')?.addEventListener('click', nextQuestion);
+    app.focus({ preventScroll: true });
+  }
+
+  function renderFeedback() {
+    const session = state.session;
+    const question = currentQuestion();
+    if (!session.feedback) return '';
+    const correct = session.feedback.correct;
+    const heading = correct ? session.feedback.message : session.feedback.message;
+    return `
+      <div class="feedback-box ${correct ? 'success' : 'error'}">
+        <span class="feedback-icon">${correct ? '✓' : '×'}</span>
+        <div>
+          <h3>${escapeHtml(heading)}</h3>
+          <p>${escapeHtml(question.explanation)}</p>
+          ${question.note ? `<p class="review-note">${escapeHtml(question.note)}</p>` : ''}
+        </div>
+        ${session.feedback.showNext ? `<button class="primary-button" type="button" id="nextButton">${session.index + 1 >= session.questions.length ? 'Finish run' : 'Next question'} →</button>` : ''}
+      </div>`;
+  }
+
+  function answerQuestion(displayIndex) {
+    const session = state.session;
+    if (!session || session.locked) return;
+    const question = currentQuestion();
+    const selected = session.displayOptions[displayIndex];
+    if (!selected) return;
+    const correct = selected.originalIndex === question.answer;
+    session.locked = true;
+    profile.totalAnswered += 1;
+
+    if (correct) {
+      session.correct += 1;
+      session.streak += 1;
+      session.bestStreak = Math.max(session.bestStreak, session.streak);
+      profile.totalCorrect += 1;
+      profile.bestStreak = Math.max(profile.bestStreak, session.streak);
+      const base = isBossQuestion() ? 20 : 10;
+      const combo = Math.min(20, session.streak * 2);
+      let reward = base + combo;
+      let bonusMessage = '';
+      if (Math.random() < 0.12) {
+        reward += 25;
+        bonusMessage = ' Supply crate found: +25 bonus XP.';
+        toast('Supply crate', 'Random bonus: +25 XP.', true);
+      }
+      profile.xp += reward;
+      session.score += isBossQuestion() ? 2 : 1;
+      session.feedback = {
+        correct: true,
+        selectedOriginal: selected.originalIndex,
+        message: `${PRAISE[Math.floor(Math.random() * PRAISE.length)]} +${reward} XP.${bonusMessage}`,
+        showNext: session.mode !== 'speedrun'
+      };
+      playTone('correct');
+    } else {
+      session.wrong += 1;
+      session.streak = 0;
+      session.feedback = {
+        correct: false,
+        selectedOriginal: selected.originalIndex,
+        message: FAILS[Math.floor(Math.random() * FAILS.length)],
+        showNext: ['practice', 'daily'].includes(session.mode)
+      };
+      playTone('wrong');
+      if (session.mode === 'hardcore') {
+        profile.hardcoreBest = Math.max(profile.hardcoreBest, session.index + 1);
+      } else if (session.mode === 'survival') {
+        session.lives -= 1;
+        session.feedback.showNext = session.lives > 0;
+      } else if (session.mode === 'speedrun') {
+        session.endsAt -= 5000;
+        session.timeLeft = Math.max(0, Math.ceil((session.endsAt - Date.now()) / 1000));
+      }
+    }
+
+    saveProfile();
+    checkAchievements();
+    renderQuiz();
+
+    if (!correct) {
+      if (session.mode === 'hardcore') window.setTimeout(renderHardcoreReset, 1250);
+      if (session.mode === 'survival' && session.lives <= 0) window.setTimeout(() => finishSession('out-of-lives'), 900);
+      if (session.mode === 'speedrun') window.setTimeout(nextQuestion, 450);
+    } else if (session.mode === 'speedrun') {
+      window.setTimeout(nextQuestion, 340);
+    }
+  }
+
+  function renderHardcoreReset() {
+    const session = state.session;
+    if (state.screen !== 'quiz' || !session || session.mode !== 'hardcore') return;
+    app.innerHTML = `
+      <section class="quiz-card reset-overlay">
+        <div>
+          <div class="reset-number">Q1</div>
+          <h2>Run reset.</h2>
+          <p>One miss sends the entire run back to Question 1. Question order and answer positions are being reshuffled.</p>
+        </div>
+      </section>`;
+    window.setTimeout(hardReset, 1350);
+  }
+
+  function hardReset() {
+    const session = state.session;
+    if (state.screen !== 'quiz' || !session) return;
+    session.questions = shuffle(session.originalPool);
+    session.index = 0;
+    session.score = 0;
+    session.correct = 0;
+    session.wrong = 0;
+    session.streak = 0;
+    session.bestStreak = 0;
+    session.resets += 1;
+    session.startedAt = Date.now();
+    prepareQuestion();
+    renderQuiz();
+  }
+
+  function nextQuestion() {
+    const session = state.session;
+    if (state.screen !== 'quiz' || !session) return;
+    if (!session.locked && session.mode !== 'speedrun') return;
+    session.index += 1;
+    if (session.index >= session.questions.length) {
+      finishSession('complete');
+      return;
+    }
+    prepareQuestion();
+    renderQuiz();
+  }
+
+  function finishSession(reason) {
+    const session = state.session;
+    if (state.screen !== 'quiz' || !session) return;
+    clearTimer();
+    session.completed = reason === 'complete';
+    if (session.completed) profile.completions += 1;
+    if (session.mode === 'daily') {
+      profile.dailyDate = todayKey();
+      profile.dailyScore = session.correct;
+    }
+    saveProfile();
+    checkAchievements(session);
+    state.screen = 'result';
+    renderResult(reason);
+  }
+
+  function renderResult(reason) {
+    const session = state.session;
+    const elapsed = Math.max(1, Math.round((Date.now() - session.startedAt) / 1000));
+    const answered = session.correct + session.wrong;
+    const runAccuracy = answered ? Math.round(session.correct / answered * 100) : 0;
+    const messages = {
+      complete: ['Run complete.', 'The question set has been fully commissioned.'],
+      'out-of-lives': ['All three lives are gone.', 'The system failed inspection, but the missed items are now exposed.'],
+      timeout: ['Time expired.', 'Speedrun is over. The score is locked in.']
+    };
+    const [title, subtitle] = messages[reason] || ['Run ended.', 'Your progress has been saved locally.'];
+
+    app.innerHTML = `
+      <section class="result-card">
+        <div class="result-icon">${reason === 'complete' ? '✓' : reason === 'timeout' ? '⏱' : '×'}</div>
+        <p class="eyebrow">${escapeHtml(modeName(session.mode))}</p>
+        <h1>${escapeHtml(title)}</h1>
+        <p>${escapeHtml(subtitle)}</p>
+        <div class="result-stats">
+          <div class="stat-tile"><strong>${session.correct}</strong><span>Correct answers</span></div>
+          <div class="stat-tile"><strong>${runAccuracy}%</strong><span>Run accuracy</span></div>
+          <div class="stat-tile"><strong>${formatTime(elapsed)}</strong><span>Elapsed time</span></div>
+          <div class="stat-tile"><strong>${session.bestStreak}</strong><span>Best streak</span></div>
+          <div class="stat-tile"><strong>${session.resets || 0}</strong><span>Hardcore resets</span></div>
+          <div class="stat-tile"><strong>${session.score}</strong><span>Mode score</span></div>
+        </div>
+        <div class="result-actions">
+          <button class="primary-button" type="button" id="retryButton">Run it again</button>
+          <button class="secondary-button" type="button" id="resultHomeButton">Change setup</button>
+        </div>
+      </section>`;
+    document.getElementById('retryButton')?.addEventListener('click', () => startSession(session.mode));
+    document.getElementById('resultHomeButton')?.addEventListener('click', renderHome);
+    app.focus({ preventScroll: true });
+  }
+
+  function startTimer() {
+    clearTimer();
+    timerHandle = window.setInterval(() => {
+      const session = state.session;
+      if (!session || session.mode !== 'speedrun') return clearTimer();
+      session.timeLeft = Math.max(0, Math.ceil((session.endsAt - Date.now()) / 1000));
+      const timerText = document.getElementById('timerText');
+      const timerFill = document.getElementById('timerFill');
+      if (timerText) timerText.textContent = formatTime(session.timeLeft);
+      if (timerFill) timerFill.style.width = `${Math.max(0, session.timeLeft / 120 * 100)}%`;
+      if (session.timeLeft <= 0) finishSession('timeout');
+    }, 250);
+  }
+
+  function clearTimer() {
+    if (timerHandle) window.clearInterval(timerHandle);
+    timerHandle = null;
+  }
+
+  function formatTime(totalSeconds) {
+    const seconds = Math.max(0, Math.floor(totalSeconds));
+    const minutes = Math.floor(seconds / 60);
+    return `${minutes}:${String(seconds % 60).padStart(2, '0')}`;
+  }
+
+  function confirmExit() {
+    if (window.confirm('Exit this run? Current run progress will be discarded, but lifetime XP and stats remain saved.')) renderHome();
+  }
+
+  function exportProgress() {
+    const payload = {
+      app: 'Circuit Grind',
+      exportedAt: new Date().toISOString(),
+      profile,
+      questionCount: allQuestions().length
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `circuit-grind-progress-${todayKey()}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast('Progress exported', 'A JSON backup was downloaded to this device.');
+  }
+
+  function resetStats() {
+    if (!window.confirm('Reset all Circuit Grind XP, achievements, and local statistics on this device?')) return;
+    const retained = { theme: profile.theme, sound: profile.sound };
+    profile = { ...defaults, ...retained };
+    state.mode = profile.lastMode;
+    state.selectedBanks = new Set(profile.selectedBanks);
+    state.selectedCategory = 'all';
+    saveProfile();
+    renderHome();
+  }
+
+  function updateSoundButton() {
+    soundButton.classList.toggle('active', profile.sound);
+    soundButton.textContent = profile.sound ? '♪' : '∕';
+    soundButton.setAttribute('aria-label', profile.sound ? 'Mute sound' : 'Enable sound');
+  }
+
+  function cycleTheme() {
+    const current = THEMES.indexOf(profile.theme);
+    profile.theme = THEMES[(current + 1) % THEMES.length];
+    document.documentElement.dataset.theme = profile.theme;
+    saveProfile();
+    toast('Theme changed', profile.theme[0].toUpperCase() + profile.theme.slice(1));
+  }
+
+  function updateNetworkStatus() {
+    const online = navigator.onLine;
+    networkStatus.classList.toggle('offline', !online);
+    networkStatus.querySelector('span:last-child').textContent = online ? 'Online' : 'Offline ready';
+  }
+
+  function handleKeyboard(event) {
+    if (state.screen !== 'quiz' || !state.session) return;
+    const tag = document.activeElement?.tagName;
+    if (['INPUT', 'SELECT', 'TEXTAREA'].includes(tag)) return;
+    const keys = { '1': 0, 'a': 0, '2': 1, 'b': 1, '3': 2, 'c': 2, '4': 3, 'd': 3 };
+    const key = event.key.toLowerCase();
+    if (key in keys && !state.session.locked) {
+      event.preventDefault();
+      answerQuestion(keys[key]);
+    } else if (event.key === 'Enter' && state.session.locked && state.session.feedback?.showNext) {
+      event.preventDefault();
+      nextQuestion();
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      confirmExit();
+    }
+  }
+
+  homeButton.addEventListener('click', () => {
+    if (state.screen === 'quiz' && state.session && !window.confirm('Exit the current run and return home?')) return;
+    renderHome();
+  });
+  soundButton.addEventListener('click', () => {
+    profile.sound = !profile.sound;
+    saveProfile();
+    updateSoundButton();
+    if (profile.sound) playTone('correct');
+  });
+  themeButton.addEventListener('click', cycleTheme);
+  window.addEventListener('online', updateNetworkStatus);
+  window.addEventListener('offline', updateNetworkStatus);
+  window.addEventListener('keydown', handleKeyboard);
+  window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    state.installPrompt = event;
+    installButton.classList.remove('hidden');
+  });
+  installButton.addEventListener('click', async () => {
+    if (!state.installPrompt) return;
+    state.installPrompt.prompt();
+    await state.installPrompt.userChoice;
+    state.installPrompt = null;
+    installButton.classList.add('hidden');
+  });
+
+  document.documentElement.dataset.theme = THEMES.includes(profile.theme) ? profile.theme : 'neon';
+  updateSoundButton();
+  updateNetworkStatus();
+
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+  }
+
+  if (BANKS.length !== 3 || allQuestions().length !== 163) {
+    app.innerHTML = `<section class="result-card"><div class="result-icon">!</div><h1>Question data failed to load.</h1><p>Expected 163 questions but found ${allQuestions().length}. Reload the page.</p></section>`;
+  } else {
+    renderHome();
+  }
+})();
+
+  </script>
+</body>
+</html>
