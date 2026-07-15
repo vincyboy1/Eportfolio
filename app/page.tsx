@@ -127,6 +127,34 @@ const drawingSet = [
   ["Riser / one-line", "Simplified distribution path through equipment and between building levels."],
 ];
 
+type SourceTask = { id: string; number: string; title: string; pages: number; padded?: boolean; study: string; highlights: string[] };
+
+const sourceTasks: SourceTask[] = [
+  { id: "lt-01", number: "01", title: "Identify symbols", pages: 4, study: "Start with the legend. Learn the common architectural, wiring, and schematic symbols by comparing the same device in each drawing language.", highlights: ["Architectural vs wiring vs schematic symbols", "CSA electrical floor-plan symbols", "Symbol charts for devices, controls, and components"] },
+  { id: "lt-02", number: "02", title: "Schematic diagram conventions", pages: 5, study: "Schematics explain operation. Read from source to load, follow straight horizontal/vertical lines, and use dots to distinguish an electrical junction from a crossover.", highlights: ["Mechanical pencil, line weight, and dashed linkage", "Left-to-right / top-to-bottom circuit flow", "Reference designations and de-energized contacts"] },
+  { id: "lt-03", number: "03", title: "Wiring diagram conventions", pages: 6, study: "A wiring or connection diagram shows the real terminals, physical layout, wire paths, numbers, and colours. It is for making or tracing actual connections.", highlights: ["Pictorial, schematic, and wiring views of one circuit", "Point-to-point vs highway / trunk-line wiring", "Terminal, polarity, wire-number, and colour conventions"] },
+  { id: "lt-04", number: "04", title: "Single-line, block, and riser diagrams", pages: 5, study: "One-line drawings simplify distribution: one line can stand for several conductors and normally omits the return path. Riser drawings add the building's vertical relationship.", highlights: ["Power distribution through 2D1 and 2D2", "Block diagrams and equipment relationships", "Riser diagram reading"] },
+  { id: "lt-05", number: "05", title: "Use diagrams to convey information", pages: 2, study: "Pictorial drawings make an object easier to visualize. Compare oblique, isometric, and perspective views, then choose the one that best communicates the needed shape and detail.", highlights: ["Pictorial drawing purpose", "Oblique, isometric, and perspective representation", "How visual views differ from fabrication views"] },
+  { id: "lt-06", number: "06", title: "Convert schematic and wiring diagrams", pages: 4, study: "Translate circuit operation into physical connections. Trace the two-location lamp circuit, then check how every connection is represented on the wiring diagram.", highlights: ["Two 120 V lamps controlled from two locations", "Reading a circuit before drawing it", "Converting schematic logic into wiring"] },
+  { id: "lt-07", number: "07", title: "Orthographic projection", pages: 4, study: "Use plan, front, and side views together. Think of an object in a glass box: each face gives one straight-on view without perspective distortion.", highlights: ["Glass-box projection model", "Plan, front, and right-side views", "How related dimensions transfer between views"] },
+  { id: "lt-08", number: "08", title: "Lines, lettering, and dimensioning", pages: 6, study: "Technical drawings rely on conventions. Identify visible, hidden, centre, section, dimension, extension, and leader lines before interpreting the object around them.", highlights: ["Line types and what each communicates", "Uppercase lettering and clear notes", "Dimension, extension, leader, and notation conventions"] },
+  { id: "lt-09", number: "09", title: "Working drawings", pages: 3, study: "Working drawings give the information needed to make or construct something. Detail drawings provide dimensions and notes; assembly drawings show how identified parts fit together.", highlights: ["Working detail drawing: dimensions, views, notes", "Working assembly drawing: parts list and fit", "Detail-assembly drawings combine both needs"] },
+  { id: "lt-10", number: "10", title: "Construction drawings and their divisions", pages: 17, padded: true, study: "A construction set is coordinated information. Learn which view answers site, layout, exterior, hidden construction, detailed, manufacturing, and final-record questions.", highlights: ["Site, plan, elevation, section, and detail drawings", "Title blocks, references, and drawing-set coordination", "Shop drawings and as-built drawings"] },
+];
+
+const selfTest9Pages = [
+  "Questions 1-5: service entry, 2D1/2D2, elevator feeder, meter centre.",
+  "Questions 6-8: symbols, conduit route, wall type.",
+  "Questions 9-13: architectural information and Typical Suite E panel.",
+  "Questions 14-18: Typical Suite E circuits, devices, and lighting.",
+  "Questions 19-23: communication conduit, fire alarm, and site-plan service facts.",
+  "Questions 24-27: E1 site plan and E12 riser lookups.",
+  "Questions 28-30: E12 fire alarm riser and E13 suite distribution.",
+  "Question 30 continued: suite layouts and kitchen circuits.",
+  "Question 31: E10 third-floor emergency and fire-alarm plan.",
+  "Question 31 continued and answer-key direction.",
+];
+
 const coachSets: CoachSet[] = [
   {
     title: "Self-Test 1 · Diagram types and symbols",
@@ -175,7 +203,7 @@ const coachSets: CoachSet[] = [
     title: "Self-Test 9 · Cloverdale plans",
     task: "Learning Task 13",
     cards: [
-      { label: "Questions 1-31", prompt: "Find the exact values on E1, E10, E12, and E13 drawings.", answer: "This self-test is a plan-reading exercise, not a memory quiz. Use the exact sheet named in each question: E1 for site/service, E12 for risers, E13 for suite layouts, and E10 for third-floor low-tension/fire-alarm information. Trace devices to panels and circuits, use schedules for ratings, and use the drawing scale only where the plan allows it.", note: "The actual Cloverdale plan sheets and their answer key were not included in the uploaded materials, so exact panel numbers, conduit sizes, room details, and fire-alarm counts cannot be safely supplied here.", status: "source" },
+      { label: "Questions 1-31", prompt: "Open the original Self-Test 9 pages above, then use the named drawing sheet for each answer.", answer: "These are direct plan lookups. For Question 1, find the incoming service on sheet E1, orient yourself using the north arrow, then state the direction from which it enters the site. E1 is also used for the site/service questions; E12 for risers and fire alarm; E13 for suites; and E10 for the third-floor emergency/fire-alarm questions. The answer comes from the printed drawing, not from guessing.", note: "The uploaded ZIPs include the questions but not the Cloverdale E1, E10, E12, or E13 sheets. The site now includes every supplied question page and identifies exactly which missing sheet each group needs.", status: "source" },
     ],
   },
   {
@@ -211,6 +239,9 @@ export default function Home() {
   const [paperDistance, setPaperDistance] = useState("64");
   const [coachIndex, setCoachIndex] = useState(0);
   const [revealedCards, setRevealedCards] = useState<string[]>([]);
+  const [sourceTaskIndex, setSourceTaskIndex] = useState(0);
+  const [sourcePage, setSourcePage] = useState(1);
+  const [selfTest9Page, setSelfTest9Page] = useState(1);
 
   useEffect(() => {
     const saved = window.localStorage.getItem("electrical-drawings-study-progress");
@@ -227,6 +258,8 @@ export default function Home() {
     const measured = Number(paperDistance);
     return Number.isFinite(multiplier) && Number.isFinite(measured) ? measured * multiplier : 0;
   }, [scale, paperDistance]);
+  const selectedSourceTask = sourceTasks[sourceTaskIndex];
+  const sourcePageFile = `page-${selectedSourceTask.padded ? String(sourcePage).padStart(2, "0") : sourcePage}.jpg`;
 
   function selectLesson(id: string) {
     setActiveLesson(id);
@@ -241,19 +274,24 @@ export default function Home() {
     setRevealedCards((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
   }
 
+  function selectSourceTask(index: number) {
+    setSourceTaskIndex(index);
+    setSourcePage(1);
+  }
+
   return (
     <main>
       <header className="hero" id="top">
         <nav className="nav" aria-label="Main navigation">
           <a href="#top" className="wordmark">ELECTRICAL WIRING <span>UNIT 2</span></a>
-          <div className="nav-links"><a href="#learn">Learn</a><a href="#reference">Reference</a><a href="#self-test">Self-test coach</a></div>
+          <div className="nav-links"><a href="#learn">Learn</a><a href="#course-pages">Course pages</a><a href="#self-test">Self-test coach</a></div>
         </nav>
         <div className="hero-content">
           <p className="kicker">DRAWINGS · SPECIFICATIONS · MATERIAL TAKEOFFS</p>
           <h1>Understand the print<br />before you <em>build from it.</em></h1>
           <p>This study guide turns your learning tasks, self-tests, and Unit 2 presentation into short explanations you can work through without reading a textbook for hours.</p>
           <div className="hero-meta"><span>Learning Tasks 1-16</span><span>Unit 2 presentation</span><span>Your progress saves here</span></div>
-          <a className="primary-link" href="#self-test">Open the self-test coach <b>↓</b></a>
+          <a className="primary-link" href="#course-pages">Open the actual course pages <b>↓</b></a>
         </div>
       </header>
 
@@ -309,6 +347,28 @@ export default function Home() {
           <div className="drawing-set-options">{drawingSet.map(([name], index) => <button key={name} onClick={() => setDrawingSetSelection(index)} className={drawingSetSelection === index ? "selected" : ""}>{name}</button>)}</div>
           <div className="drawing-set-result"><span>{String(drawingSetSelection + 1).padStart(2, "0")}</span><div><b>{drawingSet[drawingSetSelection][0]}</b><p>{drawingSet[drawingSetSelection][1]}</p></div></div>
         </article>
+      </section>
+
+      <section className="course-pages" id="course-pages">
+        <div className="course-pages-heading"><p className="kicker">COURSE WALKTHROUGH · LT 1–10</p><h2>Your actual learning tasks, built into the site.</h2><p>These are the original course pages from your files—not recreated diagrams. Use the short study brief to orient yourself, then work through every page at your own pace.</p></div>
+        <div className="source-layout">
+          <aside className="source-task-list" aria-label="Learning task selector">
+            {sourceTasks.map((task, index) => <button key={task.id} onClick={() => selectSourceTask(index)} className={sourceTaskIndex === index ? "selected" : ""}><span>{task.number}</span><div><b>{task.title}</b><small>{task.pages} original pages</small></div></button>)}
+          </aside>
+          <article className="source-reader">
+            <p className="course-task-label">LEARNING TASK {selectedSourceTask.number}</p>
+            <h3>{selectedSourceTask.title}</h3>
+            <p className="source-study">{selectedSourceTask.study}</p>
+            <div className="source-highlights"><b>What you should leave knowing</b>{selectedSourceTask.highlights.map((item) => <span key={item}>{item}</span>)}</div>
+            <div className="page-toolbar"><button onClick={() => setSourcePage((page) => Math.max(1, page - 1))} disabled={sourcePage === 1}>Previous page</button><strong>Original page {sourcePage} of {selectedSourceTask.pages}</strong><button onClick={() => setSourcePage((page) => Math.min(selectedSourceTask.pages, page + 1))} disabled={sourcePage === selectedSourceTask.pages}>Next page</button></div>
+            <figure className="source-page"><img src={`course-source/${selectedSourceTask.id}/${sourcePageFile}`} alt={`Original Learning Task ${selectedSourceTask.number}, page ${sourcePage}`} /><figcaption>Original course page · Learning Task {selectedSourceTask.number} · page {sourcePage}</figcaption></figure>
+          </article>
+        </div>
+      </section>
+
+      <section className="self-test-nine" id="self-test-nine">
+        <div className="self-test-nine-copy"><p className="kicker">SELF-TEST 9 · ORIGINAL PAGES</p><h2>Use the real questions—not a made-up substitute.</h2><p>Self-Test 9 is included below, page for page. Question 1 is a factual lookup on the Cloverdale drawing, so you were right to call out the earlier answer.</p><div className="source-reality"><b>Important source check</b><p>The course itself labels this as <strong>Learning Task 13</strong>, not Learning Task 9. It directs you to Cloverdale sheets E1, E10, E12, and E13 at the back of the Learning Guide. Those sheets are not present in either ZIP you uploaded, so no honest site can supply their exact answers yet. Learning Task 9 is still included above because it teaches working drawings, but it is not the source for these Cloverdale facts.</p></div><p className="self-test-route"><b>Question route:</b> pages 1–5 use service, plan, and suite information; pages 6–7 name E1/E12; pages 7–8 name E12/E13; pages 9–10 name E10.</p></div>
+        <article className="self-test-reader"><div className="page-toolbar"><button onClick={() => setSelfTest9Page((page) => Math.max(1, page - 1))} disabled={selfTest9Page === 1}>Previous page</button><strong>Self-Test 9 · page {selfTest9Page} of 10</strong><button onClick={() => setSelfTest9Page((page) => Math.min(10, page + 1))} disabled={selfTest9Page === 10}>Next page</button></div><figure className="source-page"><img src={`course-source/self-test-09/page-${String(selfTest9Page).padStart(2, "0")}.jpg`} alt={`Original Self-Test 9, page ${selfTest9Page}`} /><figcaption>{selfTest9Pages[selfTest9Page - 1]}</figcaption></figure></article>
       </section>
 
       <section className="self-test" id="self-test">

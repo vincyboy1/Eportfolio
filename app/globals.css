@@ -1,5 +1,42 @@
 @import "tailwindcss";
 
+.course-pages { background: #eaf0f2; padding: 96px max(26px, calc((100vw - 1200px) / 2)); }
+.course-pages-heading { max-width: 760px; }
+.course-pages-heading h2, .self-test-nine h2 { font-family: Georgia, serif; font-size: clamp(39px, 5vw, 60px); font-weight: 400; letter-spacing: -.055em; line-height: 1; margin: 0 0 18px; }
+.course-pages-heading > p:last-child, .self-test-nine-copy > p { color: var(--muted); font-size: 16px; line-height: 1.65; }
+.source-layout { display: grid; grid-template-columns: minmax(230px, .58fr) minmax(0, 1.42fr); margin-top: 40px; }
+.source-task-list { border-right: 1px solid #c8d2d5; padding-right: 18px; }
+.source-task-list button { align-items: flex-start; background: transparent; border: 0; border-bottom: 1px solid #d1dadd; color: var(--ink); display: flex; gap: 12px; padding: 13px 6px; text-align: left; width: 100%; }
+.source-task-list button:hover, .source-task-list button.selected { background: #dce8eb; }
+.source-task-list button > span { color: var(--blue); font-family: Georgia, serif; font-size: 18px; }
+.source-task-list button b { display: block; font-size: 13px; line-height: 1.2; }
+.source-task-list button small { color: var(--muted); display: block; font-size: 10px; margin-top: 4px; }
+.source-reader { padding-left: clamp(27px, 5vw, 72px); }
+.course-task-label { color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: .1em; margin: 2px 0 12px; }
+.source-reader h3 { font-family: Georgia, serif; font-size: clamp(31px, 4vw, 47px); font-weight: 400; letter-spacing: -.055em; line-height: 1.04; margin: 0 0 13px; }
+.source-study { color: #3d515c; font-size: 16px; line-height: 1.65; margin: 0; }
+.source-highlights { border-left: 2px solid var(--blue); margin: 24px 0; padding: 4px 0 4px 14px; }
+.source-highlights b { display: block; font-size: 12px; margin-bottom: 8px; }
+.source-highlights span { color: var(--muted); display: block; font-size: 13px; line-height: 1.55; }
+.source-highlights span::before { color: var(--blue); content: "•"; margin-right: 7px; }
+.page-toolbar { align-items: center; border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); display: flex; justify-content: space-between; margin: 26px 0 18px; padding: 11px 0; }
+.page-toolbar button { background: transparent; border: 0; color: var(--navy); font-size: 12px; font-weight: 800; padding: 7px 3px; text-decoration: underline; text-underline-offset: 4px; }
+.page-toolbar button:disabled { color: #a7afb1; cursor: not-allowed; text-decoration: none; }
+.page-toolbar strong { font-size: 12px; }
+.source-page { background: #fff; border: 1px solid #ccd4d6; margin: 0; padding: 14px; }
+.source-page img { display: block; height: auto; margin: 0 auto; max-height: 920px; max-width: 100%; width: auto; }
+.source-page figcaption { color: var(--muted); font-size: 11px; margin-top: 11px; text-align: center; }
+.self-test-nine { background: var(--white); display: grid; gap: clamp(34px, 6vw, 90px); grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); padding: 96px max(26px, calc((100vw - 1200px) / 2)); }
+.self-test-nine-copy { max-width: 550px; }
+.source-reality { background: #f5e9e6; border-left: 3px solid #9a5b49; margin: 25px 0; padding: 16px; }
+.source-reality > b { color: #824b3f; font-size: 11px; letter-spacing: .09em; text-transform: uppercase; }
+.source-reality p { color: #694b42; font-size: 14px; line-height: 1.6; margin: 8px 0 0; }
+.self-test-route { border-top: 1px solid var(--line); font-size: 14px !important; padding-top: 16px; }
+.self-test-reader .page-toolbar { margin-top: 0; }
+
+@media (max-width: 820px) { .source-layout, .self-test-nine { grid-template-columns: 1fr; } .source-task-list { border-bottom: 1px solid #c8d2d5; border-right: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; padding: 0 0 24px; } .source-reader { padding: 42px 0 0; } .self-test-nine { gap: 38px; } }
+@media (max-width: 530px) { .course-pages, .self-test-nine { padding-bottom: 65px; padding-top: 65px; } .source-task-list { display: block; } .page-toolbar strong { font-size: 10px; } }
+
 .self-test { background: var(--white); padding: 96px max(26px, calc((100vw - 1200px) / 2)); }
 .self-test-intro { max-width: 760px; }
 .self-test-intro h2 { font-family: Georgia, serif; font-size: clamp(39px, 5vw, 60px); font-weight: 400; letter-spacing: -.055em; line-height: 1; margin: 0 0 18px; }

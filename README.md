@@ -9,11 +9,12 @@ A guided, visual study site built from the supplied Learning Tasks 1-16, self-te
 - Interactive references for line types, scale conversion, and choosing the correct drawing in a set.
 - A Self-Test Coach that groups the supplied self-test questions, teaches the answer, then lets you reveal it only when you are ready.
 - Clear flags for image-only questions and questions that need a specific plan sheet or manufacturer-manual appendix.
+- A built-in reader containing every original page from Learning Tasks 1-10 and all original Self-Test 9 pages.
 - Progress markers stored only in the browser used for study.
 
 ## Important study note
 
-Most of the supplied self-tests are covered directly. Exact lookup answers for the Cloverdale plan sheets (Self Test 9) and the Ideal Megger, Siemens, and Intermatic manual appendices (Self Test 11) cannot be recreated because those source pages were not included. The site identifies those exact gaps so you can use the original sheets or manuals to complete them.
+Most of the supplied self-tests are covered directly. Self-Test 9 is now included page-for-page. Its exact lookup answers still require the Cloverdale plan sheets E1, E10, E12, and E13; the course directs students to those sheets, but they were not in the uploaded ZIPs. The Ideal Megger, Siemens, and Intermatic manual appendices for Self Test 11 were also not included. The site identifies these exact gaps rather than inventing answers.
 
 ## Publish update to GitHub Pages
 
