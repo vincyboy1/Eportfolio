@@ -14,6 +14,9 @@ type Lesson = {
   check: { question: string; answer: string };
 };
 
+type CoachCard = { label: string; prompt: string; answer: string; note?: string; status?: "source" | "visual" };
+type CoachSet = { title: string; task: string; cards: CoachCard[] };
+
 const lessons: Lesson[] = [
   {
     id: "drawing-types",
@@ -124,6 +127,81 @@ const drawingSet = [
   ["Riser / one-line", "Simplified distribution path through equipment and between building levels."],
 ];
 
+const coachSets: CoachSet[] = [
+  {
+    title: "Self-Test 1 · Diagram types and symbols",
+    task: "Learning Tasks 1-4",
+    cards: [
+      { label: "Questions 1-8", prompt: "Separate the diagram types before answering the first group.", answer: "The three major electrical diagram types are single-line, schematic, and wiring. Single-line diagrams include block and riser diagrams. A block diagram shows major components; a power riser shows distribution and equipment vertically through a building. A schematic explains operation; a wiring diagram shows how to wire the circuit. The statement that wiring diagrams are simpler than schematics is false." },
+      { label: "Questions 9-12", prompt: "Identify the symbols shown in the figures.", answer: "Use the symbol pages in Learning Task 1 and the Unit 2 symbol slides: a battery cell is a long and short parallel line. For the CSA, architectural, wiring, and schematic symbols, match the exact line/circle arrangement to the legend instead of relying on a label alone.", note: "These questions use image-only figures. The supplied PDFs do not include an answer key naming every figure, so use the symbol reference while practising.", status: "visual" },
+      { label: "Questions 13-20", prompt: "Recall the drawing conventions behind the final group.", answer: "A mechanical pencil is preferred for consistent-width lines and no sharpening. Dashed lines show mechanical linkage; heavier lines add emphasis, such as power versus control. Templates make clean standard shapes and symbols. A dot at a multiple junction means electrical connection. A ground symbol can mean a common chassis point. A reference designation uses letters/numbers to identify a component, for example R1. Another name for a wiring diagram is a connection diagram. The two common wiring types are point-to-point and highway/trunk-line." },
+    ],
+  },
+  {
+    title: "Self-Test 2 · Converting diagrams",
+    task: "Learning Task 6",
+    cards: [
+      { label: "Questions 1-3", prompt: "How do you turn a wiring diagram into a readable schematic?", answer: "Use schematic conventions: put the power source at the top, arrange components left-to-right, use reference designations, keep paths clear, and draw contacts de-energized. Number each wire path from the source through components and back to the source; colour or wire numbers are the preferred identifiers. The final question is a drawing exercise, so practise by tracing one loop at a time rather than trying to redraw the whole circuit at once." },
+    ],
+  },
+  {
+    title: "Self-Tests 3-5 · Views, lines, and working drawings",
+    task: "Learning Tasks 5, 7-9",
+    cards: [
+      { label: "Self-Test 3 · Questions 1-10", prompt: "How do pictorial and orthographic views differ?", answer: "Pictorial drawings give a quick mental image; the three main types are oblique, isometric, and perspective. Orthographic projections show true two-dimensional views and are used for precise fabrication. A standard projection has six possible views, but front, top, and right-side are most common. Orthographic drawings are drawn to scale and still include dimensions. For an electrician, their common use is detail and assembly drawings.", note: "Question 3 asks which image is isometric. Use the image rule: an isometric base is angled about 30 degrees to horizontal and all three surfaces are slightly distorted.", status: "visual" },
+      { label: "Self-Test 4 · Questions 1-4", prompt: "What line, lettering, scale, and dimension rules should you remember?", answer: "Visible = heavy continuous; hidden = thin equal dashes; centre = alternating long/short dashes; section = thin 45-degree hatching; long break = a removed portion of a long view. In 1:10, 1 refers to the drawing and 10 to the actual object. Use clear vertical capital lettering. The three dimension types are size, location, and notation." },
+      { label: "Self-Test 5 · Questions 1-3", prompt: "Define the core working-drawing terms.", answer: "A working drawing is the information needed to manufacture or construct an object or structure. A detail drawing gives dimensions, views, and notes for one item. An assembly drawing shows how parts fit together and identifies them in an adjacent parts list; it is not the primary source for construction dimensions." },
+    ],
+  },
+  {
+    title: "Self-Test 6 · Construction drawings",
+    task: "Learning Task 10",
+    cards: [
+      { label: "Questions 1-7", prompt: "What is the purpose and organization of construction drawings?", answer: "Their purpose is to convey how something is built or installed, including design intent, location, dimensions, materials, and coordination. A blueprint is a reproduction of a master drawing. A division contains working drawings such as site/plot plan, plan, elevation, section, and detail. Electrical site information is not identical to architectural site information. CAD creates the master; a pen plotter historically produced it. Engineers prepare subtrade drawings; estimators price labour/material; construction workers build; maintenance workers use as-builts later." },
+      { label: "Questions 8-14", prompt: "Match common drawing names to their job.", answer: "The five working drawings are site/plot plan, plan, elevation, section, and detail. Elevation = a face of a building; detail = enlarged small component; site plan = top view of property; section = inside below a cut surface; as-built = record of deviations; shop drawing = manufacturer equipment detail; floor plan = top view inside. The electrical floor plan is the most frequently used electrical drawing. A section cut is referenced on a floor plan or elevation. Shop drawings are prepared by the manufacturer." },
+    ],
+  },
+  {
+    title: "Self-Tests 7-8 · Print navigation and electrical plans",
+    task: "Learning Tasks 11-12",
+    cards: [
+      { label: "Self-Test 7 · Questions 1-14", prompt: "How do you navigate and decode a set of prints?", answer: "The index page is the table of contents. E3 means the third electrical drawing. The title block contains the consulting engineer and project information; the revision box identifies the latest changes. Scaling means measuring a drawing and converting by its stated scale, only when permitted. Grid lines are evenly spaced across drawings; bay lines tie to actual structural features and may be irregular. A hidden line is thin with equal dashes; a long break line shows part of a view removed. A legend explains symbols. General notes apply broadly; special notes apply to a particular location. A schedule presents drawing notes or equipment data in a table." },
+      { label: "Self-Test 7 · Questions 15-17", prompt: "Read the panelboard and lighting plan in Figure 3.", answer: "These require the actual Figure 3 plan and schedules. Trace the circuit label from the device to the panelboard, then confirm its circuit number in the panel schedule. Do not invent a panel or circuit number from the text alone.", note: "The source figure is in the self-test, but its small labels were not reliable enough to turn into a trustworthy answer key.", status: "source" },
+      { label: "Self-Test 7 · Questions 18-22", prompt: "What are specifications and why do they matter?", answer: "A specification is the written requirement for material, quality, and work. If it conflicts with a drawing, the specification is usually correct. This course uses the older standard format of 16 major divisions, sequenced numerically by division. Consistent order lets every trade find requirements quickly and reduces confusion. Common electrical schedules include panelboard, lighting-fixture, and equipment schedules." },
+      { label: "Self-Test 8 · Questions 1-5", prompt: "What are the main electrical working drawings?", answer: "The usual five are electrical site/plot plan, electrical floor plan, elevation, section, and detail. Use the site plan for service entry. Multi-storey buildings generally have at least one floor plan for each floor. A floor plan looks down at the building; a reflected ceiling plan looks up at ceiling features as if reflected in a mirror. Electrical sections clarify concealed routes, vertical relationships, equipment mounting, and construction conditions." },
+    ],
+  },
+  {
+    title: "Self-Test 9 · Cloverdale plans",
+    task: "Learning Task 13",
+    cards: [
+      { label: "Questions 1-31", prompt: "Find the exact values on E1, E10, E12, and E13 drawings.", answer: "This self-test is a plan-reading exercise, not a memory quiz. Use the exact sheet named in each question: E1 for site/service, E12 for risers, E13 for suite layouts, and E10 for third-floor low-tension/fire-alarm information. Trace devices to panels and circuits, use schedules for ratings, and use the drawing scale only where the plan allows it.", note: "The actual Cloverdale plan sheets and their answer key were not included in the uploaded materials, so exact panel numbers, conduit sizes, room details, and fire-alarm counts cannot be safely supplied here.", status: "source" },
+    ],
+  },
+  {
+    title: "Self-Test 10 · Manuals and instructions",
+    task: "Learning Task 14",
+    cards: [
+      { label: "Questions 1-9", prompt: "Use the manual section that matches the task.", answer: "The manufacturer decides manual content. Safety instructions protect the installer, end user, and equipment. Use Installation for rough-in conduit and wire placement. Use Models/ratings to check load capability. Use Operation to find normal start-up behaviour or delays. Use Maintenance to keep equipment in condition. Common safety signal words are WARNING, CAUTION, and DANGER. Read even familiar equipment instructions because models, ratings, procedures, and hazards can change. Programmable equipment commonly includes controls such as occupancy sensors, timers, and other electronic controllers." },
+    ],
+  },
+  {
+    title: "Self-Test 11 · Manual lookup practice",
+    task: "Learning Task 15",
+    cards: [
+      { label: "Questions 1-28", prompt: "Locate exact Ideal Megger, Siemens Power Mod, and Intermatic values.", answer: "Start with the model/scope page, then use the table of contents and section headings: safety and operation for the Megger; installation drawings, dimensions, torque, phasing, and grounding for Power Mod; ratings, installation, adjustment, and troubleshooting for the occupancy sensor. Record the exact page or figure beside each answer.", note: "The three manufacturer manuals from the Learning Guide appendix were not included in the uploaded files. Exact warranty periods, torque values, settings, and model dimensions cannot be safely guessed.", status: "source" },
+    ],
+  },
+  {
+    title: "Self-Test 12 · PPE and material takeoff",
+    task: "Learning Task 16",
+    cards: [
+      { label: "Questions 1-3", prompt: "Recognize PPE and common electrical symbols.", answer: "Examples of PPE include safety glasses, appropriate gloves, a hard hat, safety footwear, hearing protection, and protective clothing as the task requires. For the image-based PPE and symbol questions, use the Learning Task 16 figures together with the Unit 2 symbol reference: identify the safety purpose first, then match the exact graphic to the legend.", note: "The exact figure labels are visual, so practise matching them rather than memorizing a text-only list.", status: "visual" },
+      { label: "Question 4", prompt: "Build a rough-in, finish, and tool list from the drawing.", answer: "Make separate passes: count each device and fixture; identify boxes, cable/conduit, connectors, supports, breakers, and panels for rough-in; then devices, plates, and fixtures for finish. Add the required hand/power tools. Confirm the Canadian Electrical Code requirements for box fill, conductor/breaker size, and location-specific devices. The goal is a complete buildable installation, not just a count of symbols." },
+    ],
+  },
+];
+
 export default function Home() {
   const [activeLesson, setActiveLesson] = useState(lessons[0].id);
   const [complete, setComplete] = useState<string[]>([]);
@@ -131,6 +209,8 @@ export default function Home() {
   const [drawingSetSelection, setDrawingSetSelection] = useState(0);
   const [scale, setScale] = useState("50");
   const [paperDistance, setPaperDistance] = useState("64");
+  const [coachIndex, setCoachIndex] = useState(0);
+  const [revealedCards, setRevealedCards] = useState<string[]>([]);
 
   useEffect(() => {
     const saved = window.localStorage.getItem("electrical-drawings-study-progress");
@@ -157,19 +237,23 @@ export default function Home() {
     setComplete((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
   }
 
+  function toggleCoachCard(id: string) {
+    setRevealedCards((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
+  }
+
   return (
     <main>
       <header className="hero" id="top">
         <nav className="nav" aria-label="Main navigation">
           <a href="#top" className="wordmark">ELECTRICAL WIRING <span>UNIT 2</span></a>
-          <div className="nav-links"><a href="#learn">Learn</a><a href="#reference">Reference</a><a href="#review">Review</a></div>
+          <div className="nav-links"><a href="#learn">Learn</a><a href="#reference">Reference</a><a href="#self-test">Self-test coach</a></div>
         </nav>
         <div className="hero-content">
           <p className="kicker">DRAWINGS · SPECIFICATIONS · MATERIAL TAKEOFFS</p>
           <h1>Understand the print<br />before you <em>build from it.</em></h1>
           <p>This study guide turns your learning tasks, self-tests, and Unit 2 presentation into short explanations you can work through without reading a textbook for hours.</p>
           <div className="hero-meta"><span>Learning Tasks 1-16</span><span>Unit 2 presentation</span><span>Your progress saves here</span></div>
-          <a className="primary-link" href="#learn">Begin with drawing types <b>↓</b></a>
+          <a className="primary-link" href="#self-test">Open the self-test coach <b>↓</b></a>
         </div>
       </header>
 
@@ -225,6 +309,21 @@ export default function Home() {
           <div className="drawing-set-options">{drawingSet.map(([name], index) => <button key={name} onClick={() => setDrawingSetSelection(index)} className={drawingSetSelection === index ? "selected" : ""}>{name}</button>)}</div>
           <div className="drawing-set-result"><span>{String(drawingSetSelection + 1).padStart(2, "0")}</span><div><b>{drawingSet[drawingSetSelection][0]}</b><p>{drawingSet[drawingSetSelection][1]}</p></div></div>
         </article>
+      </section>
+
+      <section className="self-test" id="self-test">
+        <div className="self-test-intro"><p className="kicker">SELF-TEST COACH</p><h2>Study the answer before you ask yourself to recall it.</h2><p>Every group below maps to your supplied self-tests. “Visual practice” means you need to match a figure to the legend. “Source required” means the exact plan sheet or manufacturer manual was not in the uploaded course files, so the site tells you exactly where to look instead of making up an answer.</p></div>
+        <div className="coach-layout">
+          <div className="coach-tabs">{coachSets.map((set, index) => <button key={set.title} onClick={() => setCoachIndex(index)} className={coachIndex === index ? "selected" : ""}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{set.title}</b><small>{set.task}</small></div></button>)}</div>
+          <article className="coach-content">
+            <p className="coach-task">{coachSets[coachIndex].task}</p><h3>{coachSets[coachIndex].title}</h3>
+            <p className="coach-instruction">Read the prompt. Pause long enough to form an answer. Then reveal the teaching answer and compare your thinking.</p>
+            <div className="coach-cards">{coachSets[coachIndex].cards.map((card, index) => {
+              const id = `${coachIndex}-${index}`; const shown = revealedCards.includes(id);
+              return <section className={`coach-card ${card.status ?? ""}`} key={id}><div className="coach-label"><span>{card.label}</span>{card.status === "visual" && <em>Visual practice</em>}{card.status === "source" && <em>Source required</em>}</div><h4>{card.prompt}</h4>{shown ? <div className="coach-answer"><b>{card.status === "source" ? "How to locate it" : "Teaching answer"}</b><p>{card.answer}</p>{card.note && <aside>{card.note}</aside>}<button onClick={() => toggleCoachCard(id)}>Hide answer</button></div> : <button className="reveal" onClick={() => toggleCoachCard(id)}>Reveal explanation</button>}</section>;
+            })}</div>
+          </article>
+        </div>
       </section>
 
       <section className="review" id="review">
